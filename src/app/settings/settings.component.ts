@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../environments/environment'
+import { DriveService } from '../drive.service';
 
 @Component({
   selector: 'app-settings',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private driveService: DriveService) { }
 
   ngOnInit() {
   }
 
+  async loadClick() {
+    await this.driveService.loadSettings();
+  }
+
+  async saveClick() {
+    await this.driveService.saveSettings({ fileIds: ["asdf"], selectedFile: "asdf" });
+  }
 }
