@@ -10,6 +10,7 @@ import { DriveService } from '../drive.service';
 export class CreateComponent implements OnInit {
 
   fileName = ""
+  name = ""
 
   constructor(private route: ActivatedRoute, private drive: DriveService) { }
 
@@ -27,7 +28,7 @@ export class CreateComponent implements OnInit {
       throw new Error("ID not defined")
     }
 
-    await this.drive.saveJsonFile(id, this.fileName, {test: "casdf"})
+    await this.drive.createJsonFile(id, this.fileName, {test: "casdf"})
   }
 
 }

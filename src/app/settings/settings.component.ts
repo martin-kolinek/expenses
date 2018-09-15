@@ -19,6 +19,6 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveClick() {
-    await this.driveService.saveSettings({ fileIds: ["asdf"], selectedFile: "asdf" });
+    await this.driveService.saveSettings({ fileIds: ["basdfsdf", "cddcd"], selectedFile: "adfa" });
   }
 }

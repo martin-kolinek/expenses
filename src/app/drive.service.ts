@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import LazyPromise from 'lazy-promise'
 import { environment } from '../environments/environment'
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -36,48 +36,67 @@ export class DriveService {
     })
   }
 
-  private getAuthHeader() {
-    return `Bearer ${gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token}`;
+  private getAuthHeaders() {
+    return new HttpHeaders({ "Authorization": `Bearer ${gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token}` });
   }
 
-  async saveSettings(settings: Object) {
-    await this.saveJsonFile("appDataFolder", "settings.json", settings)
-    console.log(`Saved settings: ${JSON.stringify(settings)}`)
+  private getUploadUrl(suffix = "") {
+    const baseRoot = gapi['config'].get('googleapis.config').root;
+    return `${baseRoot}/upload/drive/v2/files${suffix}?uploadType=resumable`;
   }
 
-  async loadSettings(): Promise<Object | undefined> {
-    await this.signInPromise
-
+  private async getSettingsFile() {
     var settingsFiles = await gapi.client.drive.files.list({
       spaces: "appDataFolder",
       q: "title = 'settings.json'"
-    })
+    });
+    const settingsFile = settingsFiles.result.items[0];
+    return settingsFile;
+  }
 
-    const settingsFile = settingsFiles.result.items[0]
+  async saveSettings(settings: Object) {
+    await this.signInPromise
+
+    const settingsFile = await this.getSettingsFile()
+    if (settingsFile) {
+      await this.updateJsonFile(settingsFile.id, settings)
+      console.log(`Updated settings file ${settingsFile.id}: ${JSON.stringify(settings)}`)
+      return;
+    }
+
+    const settingsId = await this.createJsonFile("appDataFolder", "settings.json", settings)
+    console.log(`Created new settings: ${settingsId} ${JSON.stringify(settings)}`)
+  }
+
+  async loadSettings(): Promise<Object | undefined> {
+    await this.signInPromise;
+    const settingsFile = await this.getSettingsFile();
     if (!settingsFile) {
       console.log("No settings file found")
       return undefined
     }
 
-    var settings = await this.http.get(settingsFile.downloadUrl, { headers: new HttpHeaders({ "Authorization": this.getAuthHeader() }) }).toPromise()
+    var settings = await this.http.get(settingsFile.downloadUrl, { headers: this.getAuthHeaders() }).toPromise()
 
     console.log(`Loaded settings ${JSON.stringify(settings)}`)
 
     return settings;
   }
 
-  async saveJsonFile(parent: string, fileName: string, content: any) {
-    await this.signInPromise;
+  async updateJsonFile(fileId: string, content: any) {
+    await this.signInPromise
+
+    const url = this.getUploadUrl(`/${fileId}`)
+
+    var metadataReponse = await this.http.put(url, null, { observe: "response", headers: this.getAuthHeaders() }).toPromise()
+
+    return await this.uploadData(metadataReponse, content)
+  }
+
+  async createJsonFile(parent: string, fileName: string, content: any): Promise<string> {
+    await this.signInPromise
 
     const baseRoot = gapi['config'].get('googleapis.config').root;
-
-    const authHeader = this.getAuthHeader()
-
-    const metadataHeaders = {
-      "Authorization": authHeader,
-      "Content-Type": "application/json",
-      "X-Upload-Content-Type": "application/json"
-    };
 
     const metadata = {
       "title": fileName,
@@ -85,9 +104,13 @@ export class DriveService {
     };
 
 
-    const url = `${baseRoot}/upload/drive/v2/files?uploadType=resumable`;
+    const url = this.getUploadUrl()
 
-    var metadataResponse = await this.http.post(url, metadata, { observe: "response", headers: new HttpHeaders(metadataHeaders) }).toPromise()
+    var metadataResponse = await this.http.post(url, metadata, { observe: "response", headers: this.getAuthHeaders() }).toPromise()
+    return await this.uploadData(metadataResponse, content)
+  }
+
+  private async uploadData(metadataResponse: HttpResponse<Object>, content: any): Promise<string> {
     if (!metadataResponse.ok) {
       throw new Error(`Error during POST: ${JSON.stringify(metadataResponse.body)}`)
     }
@@ -97,9 +120,11 @@ export class DriveService {
       throw new Error("No location header in POST response")
     }
 
-    await this.http.put(location, content, { headers: new HttpHeaders({ "Content-Type": "application/json", }) }).toPromise()
+    const response = await this.http.put(location, content, { headers: new HttpHeaders({ "Content-Type": "application/json", }) }).toPromise()
+    const file = response as gapi.client.drive.FileResource
 
-    console.log(`Saved file ${fileName}`)
+    console.log(`Uploaded data ${file.id}`)
+    return file.id
   }
 
   async loadFileInfo(fileId: string): Promise<FileInfo> {

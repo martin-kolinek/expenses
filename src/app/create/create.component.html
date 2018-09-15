@@ -1,7 +1,10 @@
 <h2>Create new Expenses file</h2>
 <div class="create-form">
   <mat-form-field class="create-form-field">
-    <input matInput [(ngModel)]="fileName" required placeholder="File Name">
+    <input matInput [(ngModel)]="name" required placeholder="Name">
+  </mat-form-field>
+  <mat-form-field class="create-form-field">
+    <input matInput [(ngModel)]="fileName" required placeholder="File Name in Drive">
   </mat-form-field>
   <div class="button-container">
     <button mat-fab class="create-confirm" (click)="confirm()">
