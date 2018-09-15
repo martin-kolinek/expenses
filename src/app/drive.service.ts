@@ -102,6 +102,14 @@ export class DriveService {
     return settings;
   }
 
+  async loadJsonFile(fileId: string): Promise<object> {
+    await this.signInPromise
+
+    const file = await gapi.client.drive.files.get({ fileId: fileId })
+
+    return await this.http.get(file.result.downloadUrl, { headers: this.getAuthHeaders() }).toPromise()
+  }
+
   async updateJsonFile(fileId: string, content: any) {
     await this.signInPromise
 

@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { load } from '@angular/core/src/render3/instructions';
 import { ProgressService } from '../progress.service';
 import { MatSelectChange } from '@angular/material/select';
-import { ImportService } from '../import.service';
+import { ImportService, ImportInfo } from '../import.service';
+import { Papa } from 'ngx-papaparse';
 
 @Component({
   selector: 'app-import',
@@ -16,9 +17,10 @@ export class ImportComponent implements OnInit {
   private _skipLines: number = 0
   file: File
   preview: string[]
-  selectedColumns: { [columnName: string]: string[] } = {}
+  selectedColumns: ImportInfo = {}
   outputColumns: string[] = []
-  availableColumns: string[] = ["a", "b", "c"]
+  availableColumns: string[] = []
+  parseData: import("/home/martin/Work/expenses/src/app/import.service").ParseData;
 
   get selectedEncoding() {
     return this._selectedEncoding
@@ -36,11 +38,11 @@ export class ImportComponent implements OnInit {
 
   set skipLines(ln: number) {
     this._skipLines = ln
-    
+
     this.read()
   }
 
-  constructor(private progress: ProgressService, private importService: ImportService) { }
+  constructor(private progress: ProgressService, private importService: ImportService, private papa: Papa) { }
 
   ngOnInit() {
     this.outputColumns = this.importService.getDestinationColumns()
@@ -59,28 +61,17 @@ export class ImportComponent implements OnInit {
 
   async read() {
     this.progress.executeWithProgress(async () => {
-      const str = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onerror = e => reject(e)
-        reader.onload = res => {
-          if (typeof reader.result == "string") {
-            resolve(reader.result)
-          }
+      this.parseData = this.importService.getParseData(this.file, this.selectedEncoding, this.skipLines)
 
-          reject(new Error("Unexpected read error"))
-        }
-        reader.readAsText(this.file, this.selectedEncoding)
-      })
+      this.preview = await this.parseData.getPreview()
+      this.availableColumns = await this.parseData.getAvailableColumns()
+      this.selectedColumns = {}
+    })
+  }
 
-      const lines = str.split(/\r?\n/).filter(p => p)
-      lines.splice(0, this.skipLines)
-      this.preview = [
-        lines[0],
-        lines[1],
-        lines[2],
-        lines[3]
-      ]
-      console.log(str)
+  async save() {
+    this.progress.executeWithProgress(async () => {
+      await this.importService.save(this.parseData, this.selectedColumns)
     })
   }
 

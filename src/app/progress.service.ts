@@ -10,7 +10,7 @@ export class ProgressService {
   constructor() { }
 
   async executeWithProgress<T>(func: () => PromiseLike<T>):Promise<T> {
-    const wait = new Promise(resolve => setTimeout(resolve, 1000)).then(_ => "wait")
+    const wait = new Promise(resolve => setTimeout(resolve, 100)).then(_ => "wait")
     const promise = func()
     const exec = promise.then(_ => "exec")
     const first = await Promise.race([wait, exec])

@@ -13,6 +13,8 @@
   <mat-form-field class="input-form-field">
     <input matInput placeholder="Skip lines" type="number" [(ngModel)]="skipLines">
   </mat-form-field>
+</div>
+<div class="input-form-wide" *ngIf="file">
   <h3>Preview</h3>
   <div *ngFor="let previewLine of preview" class="preview-line">{{previewLine}}</div>
   <h3>Settings</h3>
@@ -28,5 +30,10 @@
         <mat-option *ngFor="let availableColumn of availableColumns" [value]="availableColumn">{{availableColumn}}</mat-option>
       </mat-select>
     </mat-form-field>
+  </div>
+  <div class="form-button-container">
+    <button mat-fab (click)="save()" color="primary">
+      <mat-icon>save_alt</mat-icon>
+    </button>
   </div>
 </div>

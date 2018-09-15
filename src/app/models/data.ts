@@ -1,11 +1,13 @@
-type DataRecord = {
-    date: Date,
+import { Moment } from "moment";
+
+export type DataRecord = {
+    date: string,
     amount: number,
     currency: string,
     contraAccount: string,
     description: string
 }
 
-type ExpensesData = {
+export type ExpensesData = {
     records: DataRecord[]
 }
