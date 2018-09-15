@@ -3,6 +3,7 @@ import { DriveService } from '../drive.service';
 import { SettingsService } from '../settings.service';
 import { Settings } from '../models/settings'
 import { load } from '@angular/core/src/render3/instructions';
+import { ProgressService } from '../progress.service';
 
 @Component({
   selector: 'app-settings',
@@ -22,25 +23,32 @@ export class SettingsComponent implements OnInit {
   }
 
   set selectedFile(f: string) {
-    this.settings.selectedDataFile = f
-    this.changed = true
-    this.loadSelectedFile()
+    this.progress.executeWithProgress(async () => {
+      this.settings.selectedDataFile = f
+      this.changed = true
+      this.loadSelectedFile()
+    })
   }
 
-  constructor(private driveService: DriveService, private settingsService: SettingsService) { }
+  constructor(private driveService: DriveService, private settingsService: SettingsService, private progress: ProgressService) { }
 
   async ngOnInit() {
-    await this.reload();
-    await this.loadSelectedFile()
+    this.progress.executeWithProgress(async () => {
+      await this.reload();
+    })
   }
 
   async changeUser() {
-    await this.driveService.forceSignIn()
-    await this.reload()
+    this.progress.executeWithProgress(async () => {
+      await this.driveService.forceSignIn()
+      await this.reload()
+    })
   }
 
   async confirm() {
-    await this.settingsService.changeSettings(this.settings.selectedDataFile || "", this.toForget)
+    this.progress.executeWithProgress(async () => {
+      await this.settingsService.changeSettings(this.settings.selectedDataFile || "", this.toForget)
+    })
   }
 
   forget() {
@@ -66,6 +74,8 @@ export class SettingsComponent implements OnInit {
     this.userName = (await this.driveService.getUserInfo()).name;
     this.settings = await this.settingsService.getSettings()
     this.toForget = []
+    await this.loadSelectedFile()
+
     console.log(JSON.stringify(this.settings))
   }
 }

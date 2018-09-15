@@ -16,17 +16,20 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './/app-routing.module';
 import { SettingsComponent } from './settings/settings.component';
 
-import { CreateComponent } from './create/create.component'
+import { CreateComponent } from './create/create.component';
+import { ProgressComponent } from './progress/progress.component'
 
 @NgModule({
   declarations: [
     AppComponent,
     SettingsComponent,
-    CreateComponent
+    CreateComponent,
+    ProgressComponent
   ],
   imports: [
     BrowserModule,
@@ -41,6 +44,7 @@ import { CreateComponent } from './create/create.component'
     MatSelectModule,
     MatDividerModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule
