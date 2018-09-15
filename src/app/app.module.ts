@@ -14,6 +14,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDividerModule } from '@angular/material/divider';
 
 import { AppRoutingModule } from './/app-routing.module';
 import { SettingsComponent } from './settings/settings.component';
@@ -36,6 +38,8 @@ import { CreateComponent } from './create/create.component'
     MatListModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
+    MatDividerModule,
     MatProgressSpinnerModule,
     AppRoutingModule,
     HttpClientModule,

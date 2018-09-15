@@ -21,10 +21,12 @@ export class DriveService {
         await this.loadPromise
         await gapi.client.init({
           clientId: environment.googleClientId,
-          scope: "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install"
+          scope: "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install https://www.googleapis.com/auth/drive.appfolder"
         })
 
-        await gapi.auth2.getAuthInstance().signIn();
+        if (!gapi.auth2.getAuthInstance().isSignedIn) {
+          await gapi.auth2.getAuthInstance().signIn();
+        }
 
         await gapi.client.load("drive", "v2")
 
@@ -43,6 +45,23 @@ export class DriveService {
   private getUploadUrl(suffix = "") {
     const baseRoot = gapi['config'].get('googleapis.config').root;
     return `${baseRoot}/upload/drive/v2/files${suffix}?uploadType=resumable`;
+  }
+
+  async getUserInfo(): Promise<{ name: string, id: string }> {
+    await this.signInPromise
+
+    const profile = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile()
+
+    return {
+      name: profile.getName(),
+      id: profile.getId()
+    }
+  }
+
+  async forceSignIn() {
+    await this.signInPromise
+
+    await gapi.auth2.getAuthInstance().signIn()
   }
 
   private async getSettingsFile() {
@@ -131,7 +150,7 @@ export class DriveService {
     await this.signInPromise
 
     return await gapi.client.drive.files.get({ fileId: fileId }).then(success => {
-      console.log(`Loaded file info ${JSON.stringify(success)}`)
+      console.log(`Loaded file info`)
       return { fileName: success.result.title, role: success.result.userPermission.role, exists: true }
     }, error => {
       console.log(`Load error ${JSON.stringify(error)}`)
