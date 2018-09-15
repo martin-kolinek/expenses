@@ -9,10 +9,20 @@ export class ProgressService {
 
   constructor() { }
 
-  async executeWithProgress(func: () => PromiseLike<any>) {
+  async executeWithProgress<T>(func: () => PromiseLike<T>):Promise<T> {
+    const wait = new Promise(resolve => setTimeout(resolve, 1000)).then(_ => "wait")
+    const promise = func()
+    const exec = promise.then(_ => "exec")
+    const first = await Promise.race([wait, exec])
+    if (first == "exec") {
+      console.log("Finished before showing progress")
+      return await promise
+    }
+
     this.start()
-    await func()
+    const result = await promise
     this.stop()
+    return result
   }
 
   private start() {

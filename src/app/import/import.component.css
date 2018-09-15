@@ -1,0 +1,26 @@
+.file-select {
+    margin-bottom: 20px;
+}
+
+.column-container {
+    display:flex;
+    align-items: center;
+}
+
+.column-select {
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+.column-header {
+    text-transform: capitalize;
+    margin-right: 10px;
+    width: 100px;
+    display:inline-block;
+}
+
+.preview-line {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}

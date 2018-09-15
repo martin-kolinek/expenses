@@ -80,19 +80,19 @@ export class SettingsService {
       dataFiles: [],
       selectedDataFile: undefined
     };
-    this.loadPromise = new LazyPromise<number>(async (resolve, reject) => {
+    this.loadPromise = new LazyPromise<any>(async (resolve, reject) => {
       try {
         const loadedSettings = await this.drive.loadSettings();
         if (loadedSettings) {
           this.settings = loadedSettings as Settings;
-          resolve(1)
+          resolve()
           return
         }
 
         console.log("Using default settings")
         this.settings = defaultSettings;
         this.user = (await this.drive.getUserInfo()).id;
-        resolve(1);
+        resolve();
       }
       catch (e) {
         reject(e)

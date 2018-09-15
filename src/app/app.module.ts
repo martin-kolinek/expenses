@@ -17,19 +17,22 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatChipsModule } from '@angular/material/chips';
 
 import { AppRoutingModule } from './/app-routing.module';
 import { SettingsComponent } from './settings/settings.component';
 
 import { CreateComponent } from './create/create.component';
 import { ProgressComponent } from './progress/progress.component'
+import { ImportComponent } from './import/import.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SettingsComponent,
     CreateComponent,
-    ProgressComponent
+    ProgressComponent,
+    ImportComponent
   ],
   imports: [
     BrowserModule,
@@ -45,6 +48,7 @@ import { ProgressComponent } from './progress/progress.component'
     MatDividerModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    MatChipsModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule

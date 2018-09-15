@@ -2,18 +2,20 @@
   <h2 class="header-text">Logged in as {{userName}}</h2>
   <button mat-button color="primary" (click)="changeUser()">Change</button>
 </div>
-<h3>Select file to work with</h3>
 <div class="input-form">
-  <mat-select *ngIf="settings" [(value)]="selectedFile">
-    <mat-option *ngFor="let dataFile of settings.dataFiles" [value]="dataFile.id">
-      {{dataFile.name}}
-    </mat-option>
-  </mat-select>
+  <mat-form-field class="input-form-field" *ngIf="settings" >
+    <mat-select [(value)]="selectedFile" placeholder="Select file to work with">
+      <mat-option *ngFor="let dataFile of settings.dataFiles" [value]="dataFile.id">
+        {{dataFile.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
   <div *ngIf="fileInfo">
     <h4>File Information</h4>
     <mat-list>
       <mat-list-item class="info-container">
-        <h5>{{fileInfo.name}} <span *ngIf="!fileInfo.exists">(not found)</span> <button mat-button color="primary" (click)="forget()">Forget</button></h5>
+        <h5>{{fileInfo.name}} <span *ngIf="!fileInfo.exists">(not found)</span> <button mat-button color="primary"
+            (click)="forget()">Forget</button></h5>
       </mat-list-item>
       <mat-divider *ngIf="fileInfo.exists"></mat-divider>
       <mat-list-item class="info-container" *ngIf="fileInfo.exists">
