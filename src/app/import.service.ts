@@ -62,7 +62,7 @@ export class ParseData {
     return (result.data as object[]).map(x => {
       return {
         date: utc(this.joinField(x, "date", importInfo), "DD.MM.YYYY").format(),
-        amount: Number.parseFloat(this.joinField(x, "amount", importInfo)),
+        amount: Number.parseFloat(this.joinField(x, "amount", importInfo).replace(",", ".")),
         currency: this.joinField(x, "currency", importInfo),
         contraAccount: this.joinField(x, "contraAccount", importInfo),
         description: this.joinField(x, "description", importInfo),
