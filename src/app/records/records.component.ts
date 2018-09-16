@@ -1,24 +1,30 @@
-import { Component, OnInit, ViewChild, TemplateRef, AfterViewInit } from '@angular/core';
-import { ToolbarService } from '../toolbar.service';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { DataService } from '../data.service';
+import { ProgressService } from '../progress.service';
+import { DataRecord } from '../models/data';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-records',
   templateUrl: './records.component.html',
   styleUrls: ['./records.component.css']
 })
-export class RecordsComponent implements AfterViewInit {
+export class RecordsComponent implements OnInit {
 
-  @ViewChild('testTemplate') fileInput: TemplateRef<any>
+  records: DataRecord[] = []
+  displayedRecords: DataRecord[] = []
 
-  constructor(private toolbarService: ToolbarService) {
-
+  constructor(private progress: ProgressService, private dataService: DataService) {
   }
 
-  ngAfterViewInit() {
-    this.toolbarService.template = this.fileInput
+  async ngOnInit() {
+    this.progress.executeWithProgress(async () => {
+      this.records = await this.dataService.getRecords()
+      this.changePage(0, 20)
+    })
   }
 
-  ngOnInit() {
+  changePage(pageIndex, pageSize) {
+    this.displayedRecords = this.records.slice(pageIndex * pageSize, pageIndex * pageSize + pageSize)
   }
-
 }

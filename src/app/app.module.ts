@@ -29,6 +29,7 @@ import { ImportComponent } from './import/import.component';
 import { RecordsComponent } from './records/records.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ShellComponent } from './shell/shell.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { ShellComponent } from './shell/shell.component';
     MatDialogModule,
     MatChipsModule,
     MatExpansionModule,
+    MatPaginatorModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,

@@ -3,6 +3,7 @@ import { DriveService } from './drive.service';
 import { Settings, DataFile } from './models/settings';
 import LazyPromise from 'lazy-promise'
 import { reject } from 'q';
+import { lazy } from './util';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { reject } from 'q';
 export class SettingsService {
   private settings: Settings
   private user: string
-  private loadPromise: Promise<number>
+  private loadPromise: Promise<any>
   constructor(private drive: DriveService) {
     try {
       this.createLoadPromise();
@@ -21,6 +22,7 @@ export class SettingsService {
   }
 
   async getSettings(): Promise<Settings> {
+    console.log("Loading settings")
     await this.ensureSettings();
     return this.settings
   }
@@ -80,23 +82,17 @@ export class SettingsService {
       dataFiles: [],
       selectedDataFile: undefined
     };
-    this.loadPromise = new LazyPromise<any>(async (resolve, reject) => {
-      try {
-        const loadedSettings = await this.drive.loadSettings();
-        if (loadedSettings) {
-          this.settings = loadedSettings as Settings;
-          resolve()
-          return
-        }
+    
+    this.loadPromise = lazy(async () => {
+      this.user = (await this.drive.getUserInfo()).id;
+      const loadedSettings = await this.drive.loadSettings();
+      if (loadedSettings) {
+        this.settings = loadedSettings as Settings;
+        return
+      }
 
-        console.log("Using default settings")
-        this.settings = defaultSettings;
-        this.user = (await this.drive.getUserInfo()).id;
-        resolve();
-      }
-      catch (e) {
-        reject(e)
-      }
+      console.log("Using default settings")
+      this.settings = defaultSettings;
     });
   }
 }

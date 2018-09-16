@@ -4,9 +4,8 @@ import LazyPromise from 'lazy-promise'
 import { lazy } from './util'
 import { PapaParseResult } from 'ngx-papaparse/lib/interfaces/papa-parse-result';
 import { utc } from 'moment'
-import { DataRecord, ExpensesData } from './models/data';
-import { DriveService } from './drive.service';
-import { SettingsService } from './settings.service';
+import { DataRecord } from './models/data';
+import { DataService } from './data.service';
 
 export type ImportInfo = {
   [column: string]: string[]
@@ -84,7 +83,7 @@ export class ParseData {
 })
 export class ImportService {
 
-  constructor(private papa: Papa, private drive: DriveService, private settings: SettingsService) { }
+  constructor(private papa: Papa, private dataService: DataService) { }
 
   private defaultRecord: DataRecord = {
     date: utc().format(),
@@ -103,25 +102,7 @@ export class ImportService {
   }
 
   async save(parseData: ParseData, importInfo: ImportInfo) {
-    const settings = await this.settings.getSettings()
-    if (!settings.selectedDataFile) {
-      console.log("No file selected")
-      return
-    }
-    var currentData = (await this.drive.loadJsonFile(settings.selectedDataFile)) as ExpensesData
-    console.log("before " + typeof currentData)
-    if (!currentData || typeof currentData != "object") {
-      currentData = { records: [] }
-    }
-    if (!currentData.records || !Array.isArray(currentData.records)) {
-      currentData.records = []
-    }
     const newRecords = await parseData.getResult(importInfo)
-    console.log("new " + JSON.stringify(newRecords))
-    currentData.records = currentData.records.concat(newRecords)
-
-    console.log("after " + JSON.stringify(currentData))
-
-    await this.drive.updateJsonFile(settings.selectedDataFile, currentData)
+    await this.dataService.addRecords(newRecords)
   }
 }

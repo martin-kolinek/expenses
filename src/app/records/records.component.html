@@ -1,6 +1,20 @@
 <app-shell [toolbarTemplate]="testTemplate">
-  
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let record of displayedRecords">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{record.date}}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{record.amount}} {{record.currency}}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <p>Contra Account: {{record.contraAccount}}</p>
+      <p>{{record.description}}</p>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <mat-paginator [length]="records.length" pageSize="20" [pageSizeOptions]="[10, 20, 50, 100, 200]" (page)="changePage($event.pageIndex, $event.pageSize)">
+  </mat-paginator>
 </app-shell>
 <ng-template #testTemplate>
-  
 </ng-template>
