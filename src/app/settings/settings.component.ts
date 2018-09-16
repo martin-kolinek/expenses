@@ -47,7 +47,7 @@ export class SettingsComponent implements OnInit {
 
   async confirm() {
     this.progress.executeWithProgress(async () => {
-      await this.settingsService.changeSettings(this.settings.selectedDataFile || "", this.toForget)
+      await this.settingsService.changeBaseSettings(this.settings.selectedDataFile || "", this.toForget)
     })
   }
 

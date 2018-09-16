@@ -6,18 +6,17 @@ import { PapaParseResult } from 'ngx-papaparse/lib/interfaces/papa-parse-result'
 import { utc } from 'moment'
 import { DataRecord } from './models/data';
 import { DataService } from './data.service';
-
-export type ImportInfo = {
-  [column: string]: string[]
-}
+import { ImportInfo } from './models/settings';
+import { SettingsService } from './settings.service';
 
 export class ParseData {
   private strPromise: Promise<string>
   private linesPromise: Promise<string[]>
   private previewPromise: Promise<string[]>
   private parseResultPromise: LazyPromise<PapaParseResult>;
+  private defaultImportInfoPromise: LazyPromise<ImportInfo>;
 
-  constructor(private file: File, private encoding: string, private skipLines: number, private papa: Papa) {
+  constructor(private file: File, private encoding: string, private skipLines: number, private papa: Papa, private settings: SettingsService) {
     this.strPromise = new LazyPromise<string>((resolve, reject) => {
       const reader = new FileReader()
       reader.onerror = e => reject(e)
@@ -33,7 +32,9 @@ export class ParseData {
 
     this.linesPromise = lazy(async () => {
       const str = await this.strPromise
-      return str.split(/\r?\n/).filter(p => p)
+      const result =  str.split(/\r?\n/).filter(p => p)
+      result.splice(0, this.skipLines)
+      return result
     })
 
     this.previewPromise = lazy(async () => {
@@ -45,6 +46,11 @@ export class ParseData {
       const lines = await this.linesPromise
       return this.papa.parse(lines.join("\n"), { header: true })
     })
+
+    this.defaultImportInfoPromise = lazy(async () => {
+      const parseResult = await this.parseResultPromise
+      return this.settings.getImportInfo(parseResult.meta.fields)
+    })
   }
 
   getPreview() {
@@ -55,6 +61,10 @@ export class ParseData {
     const result = await this.parseResultPromise
 
     return result.meta.fields
+  }
+
+  getDefaultImportInfo() {
+    return this.defaultImportInfoPromise
   }
 
   async getResult(importInfo: ImportInfo): Promise<DataRecord[]> {
@@ -83,7 +93,7 @@ export class ParseData {
 })
 export class ImportService {
 
-  constructor(private papa: Papa, private dataService: DataService) { }
+  constructor(private papa: Papa, private dataService: DataService, private settings: SettingsService) { }
 
   private defaultRecord: DataRecord = {
     date: utc().format(),
@@ -98,11 +108,13 @@ export class ImportService {
   }
 
   getParseData(input: File, encoding: string, skipLines: number) {
-    return new ParseData(input, encoding, skipLines, this.papa)
+    return new ParseData(input, encoding, skipLines, this.papa, this.settings)
   }
 
   async save(parseData: ParseData, importInfo: ImportInfo) {
     const newRecords = await parseData.getResult(importInfo)
     await this.dataService.addRecords(newRecords)
+    const availableColumns = await parseData.getAvailableColumns()
+    await this.settings.addImportInfo(availableColumns, importInfo)
   }
 }

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DriveService } from './drive.service';
-import { Settings, DataFile } from './models/settings';
+import { Settings, DataFile, ImportInfo } from './models/settings';
 import LazyPromise from 'lazy-promise'
 import { reject } from 'q';
 import { lazy } from './util';
+import { hash, codec } from 'sjcl'
 
 @Injectable({
   providedIn: 'root'
@@ -38,7 +39,7 @@ export class SettingsService {
     await this.saveSettings();
   }
 
-  async changeSettings(selectedFileId: string, forget: string[]) {
+  async changeBaseSettings(selectedFileId: string, forget: string[]) {
     await this.ensureSettings()
     this.settings.dataFiles = this.settings.dataFiles.filter(p => !forget.includes(p.id))
 
@@ -64,6 +65,41 @@ export class SettingsService {
     await this.saveSettings()
   }
 
+  async addImportInfo(key: object, importInfo: ImportInfo) {
+    await this.ensureSettings()
+
+    const keyHash = this.hashKey(key)
+
+    if (!this.settings.importInfo) {
+      this.settings.importInfo = {}
+    }
+
+    this.settings.importInfo[keyHash] = importInfo
+
+    await this.saveSettings()
+  }
+
+  async getImportInfo(key: object): Promise<ImportInfo> {
+    await this.ensureSettings()
+
+    const keyHash = this.hashKey(key)
+
+    if (!this.settings.importInfo) {
+      return {}
+    }
+
+    const stored = this.settings.importInfo[keyHash]
+
+    if (!stored) {
+      return {}
+    }
+    return stored
+  }
+
+  private hashKey(key: object) {
+    return codec.hex.fromBits(hash.sha256.hash(JSON.stringify(key)));
+  }
+
   private async saveSettings() {
     await this.drive.saveSettings(this.settings);
   }
@@ -80,9 +116,10 @@ export class SettingsService {
   private createLoadPromise() {
     const defaultSettings = {
       dataFiles: [],
-      selectedDataFile: undefined
+      selectedDataFile: undefined,
+      importInfo: {}
     };
-    
+
     this.loadPromise = lazy(async () => {
       this.user = (await this.drive.getUserInfo()).id;
       const loadedSettings = await this.drive.loadSettings();

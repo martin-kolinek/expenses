@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { load } from '@angular/core/src/render3/instructions';
 import { ProgressService } from '../progress.service';
 import { MatSelectChange } from '@angular/material/select';
-import { ImportService, ImportInfo } from '../import.service';
+import { ImportService } from '../import.service';
+import { ImportInfo } from '../models/settings'
 import { Papa } from 'ngx-papaparse';
 
 @Component({
@@ -65,7 +65,7 @@ export class ImportComponent implements OnInit {
 
       this.preview = await this.parseData.getPreview()
       this.availableColumns = await this.parseData.getAvailableColumns()
-      this.selectedColumns = {}
+      this.selectedColumns = await this.parseData.getDefaultImportInfo()
     })
   }
 
