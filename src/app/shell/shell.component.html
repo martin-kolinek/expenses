@@ -1,0 +1,27 @@
+<mat-sidenav-container>
+  <mat-sidenav #sidenav fixedInViewport>
+    <mat-toolbar>
+      <h1 class="menu">Menu</h1>
+    </mat-toolbar>
+    <mat-nav-list (click)="sidenav.close()">
+      <a mat-list-item routerLink="/records">Records</a>
+      <a mat-list-item routerLink="/import">Import</a>
+      <a mat-list-item routerLink="/settings">Settings</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button mat-icon-button (click)="sidenav.open()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <h1 class="top-header">Expenses</h1>
+      <ng-container *ngTemplateOutlet="toolbarTemplate ? toolbarTemplate : nothing">
+      </ng-container>
+    </mat-toolbar>
+    <div class="main-content">
+      <ng-content></ng-content>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+<app-progress></app-progress>
+<ng-template #nothing></ng-template>

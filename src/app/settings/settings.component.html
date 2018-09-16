@@ -1,35 +1,37 @@
-<div class="header-container">
-  <h2 class="header-text">Logged in as {{userName}}</h2>
-  <button mat-button color="primary" (click)="changeUser()">Change</button>
-</div>
-<div class="input-form">
-  <mat-form-field class="input-form-field" *ngIf="settings" >
-    <mat-select [(value)]="selectedFile" placeholder="Select file to work with">
-      <mat-option *ngFor="let dataFile of settings.dataFiles" [value]="dataFile.id">
-        {{dataFile.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <div *ngIf="fileInfo">
-    <h4>File Information</h4>
-    <mat-list>
-      <mat-list-item class="info-container">
-        <h5>{{fileInfo.name}} <span *ngIf="!fileInfo.exists">(not found)</span> <button mat-button color="primary"
-            (click)="forget()">Forget</button></h5>
-      </mat-list-item>
-      <mat-divider *ngIf="fileInfo.exists"></mat-divider>
-      <mat-list-item class="info-container" *ngIf="fileInfo.exists">
-        Drive File Name: {{fileInfo.fileName}}
-      </mat-list-item>
-      <mat-divider *ngIf="fileInfo.exists"></mat-divider>
-      <mat-list-item *ngIf="fileInfo.exists">
-        Drive Access Level: {{fileInfo.role}}
-      </mat-list-item>
-    </mat-list>
+<app-shell>
+  <div class="header-container">
+    <h2 class="header-text">Logged in as {{userName}}</h2>
+    <button mat-button color="primary" (click)="changeUser()">Change</button>
   </div>
-  <div class="form-button-container">
-    <button mat-fab [disabled]="!changed" (click)="confirm()" color="primary">
-      <mat-icon>check</mat-icon>
-    </button>
+  <div class="input-form">
+    <mat-form-field class="input-form-field" *ngIf="settings">
+      <mat-select [(value)]="selectedFile" placeholder="Select file to work with">
+        <mat-option *ngFor="let dataFile of settings.dataFiles" [value]="dataFile.id">
+          {{dataFile.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div *ngIf="fileInfo">
+      <h4>File Information</h4>
+      <mat-list>
+        <mat-list-item class="info-container">
+          <h5>{{fileInfo.name}} <span *ngIf="!fileInfo.exists">(not found)</span> <button mat-button color="primary"
+              (click)="forget()">Forget</button></h5>
+        </mat-list-item>
+        <mat-divider *ngIf="fileInfo.exists"></mat-divider>
+        <mat-list-item class="info-container" *ngIf="fileInfo.exists">
+          Drive File Name: {{fileInfo.fileName}}
+        </mat-list-item>
+        <mat-divider *ngIf="fileInfo.exists"></mat-divider>
+        <mat-list-item *ngIf="fileInfo.exists">
+          Drive Access Level: {{fileInfo.role}}
+        </mat-list-item>
+      </mat-list>
+    </div>
+    <div class="form-button-container">
+      <button mat-fab [disabled]="!changed" (click)="confirm()" color="primary">
+        <mat-icon>check</mat-icon>
+      </button>
+    </div>
   </div>
-</div>
+</app-shell>

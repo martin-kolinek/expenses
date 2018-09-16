@@ -26,6 +26,9 @@ import { SettingsComponent } from './settings/settings.component';
 import { CreateComponent } from './create/create.component';
 import { ProgressComponent } from './progress/progress.component'
 import { ImportComponent } from './import/import.component';
+import { RecordsComponent } from './records/records.component';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ShellComponent } from './shell/shell.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +36,9 @@ import { ImportComponent } from './import/import.component';
     SettingsComponent,
     CreateComponent,
     ProgressComponent,
-    ImportComponent
+    ImportComponent,
+    RecordsComponent,
+    ShellComponent
   ],
   imports: [
     BrowserModule,
@@ -50,6 +55,7 @@ import { ImportComponent } from './import/import.component';
     MatProgressSpinnerModule,
     MatDialogModule,
     MatChipsModule,
+    MatExpansionModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
