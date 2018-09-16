@@ -9,10 +9,10 @@ export class ProgressService {
 
   constructor() { }
 
-  async executeWithProgress<T>(func: () => PromiseLike<T>):Promise<T> {
+  async executeWithProgress<T>(func: () => PromiseLike<T>): Promise<T> {
     const wait = new Promise(resolve => setTimeout(resolve, 100)).then(_ => "wait")
     const promise = func()
-    const exec = promise.then(_ => "exec")
+    const exec = promise.then(_ => "exec", _ => "exec")
     const first = await Promise.race([wait, exec])
     if (first == "exec") {
       console.log("Finished before showing progress")
@@ -20,9 +20,15 @@ export class ProgressService {
     }
 
     this.start()
-    const result = await promise
-    this.stop()
-    return result
+    try {
+      const result = await promise
+      this.stop()
+      return result
+    }
+    catch (e) {
+      this.stop()
+      throw e
+    }
   }
 
   private start() {

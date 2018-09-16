@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
@@ -20,6 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AppRoutingModule } from './/app-routing.module';
 import { SettingsComponent } from './settings/settings.component';
@@ -30,6 +31,10 @@ import { RecordsComponent } from './records/records.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ShellComponent } from './shell/shell.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { CategoriesComponent } from './categories/categories.component';
+
+import { GlobalErrorHandler } from './error.service';
+import { ErrorComponent } from './error/error.component'
 
 @NgModule({
   declarations: [
@@ -39,7 +44,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     ProgressComponent,
     ImportComponent,
     RecordsComponent,
-    ShellComponent
+    ShellComponent,
+    CategoriesComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -58,12 +65,16 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatChipsModule,
     MatExpansionModule,
     MatPaginatorModule,
+    MatSnackBarModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
     PapaParseModule
   ],
-  providers: [],
+  providers: [{
+    provide: ErrorHandler,
+    useClass: GlobalErrorHandler
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
