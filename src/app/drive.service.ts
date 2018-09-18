@@ -23,8 +23,7 @@ export class DriveService {
           clientId: environment.googleClientId,
           scope: "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install https://www.googleapis.com/auth/drive.appfolder"
         })
-
-        if (!gapi.auth2.getAuthInstance().isSignedIn) {
+        if (!gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile()) {
           await gapi.auth2.getAuthInstance().signIn();
         }
 
