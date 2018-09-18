@@ -28,6 +28,10 @@ export class CategoriesComponent implements OnInit {
     this.rules.splice(ruleIndex, 0, newRule)
   }
 
+  remove(item: EditableRule) {
+    this.rules = this.rules.filter(p => p != item)
+  }
+
   setCategory(name: string, rule: EditableRule) {
     rule.category = name
   }

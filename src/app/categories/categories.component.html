@@ -35,6 +35,9 @@
         <button mat-icon-button (click)="copy(rule)">
           <mat-icon>file_copy</mat-icon>
         </button>
+        <button mat-icon-button (click)="remove(rule)">
+          <mat-icon>close</mat-icon>
+        </button>
       </mat-list-item>
       <mat-divider *ngIf="!isLast"></mat-divider>
     </ng-container>
