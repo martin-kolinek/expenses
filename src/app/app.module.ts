@@ -36,7 +36,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { CategoriesComponent } from './categories/categories.component';
 
 import { GlobalErrorHandler } from './error.service';
-import { ErrorComponent } from './error/error.component'
+import { ErrorComponent } from './error/error.component';
+import { CategorypickerComponent } from './categorypicker/categorypicker.component'
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ErrorComponent } from './error/error.component'
     RecordsComponent,
     ShellComponent,
     CategoriesComponent,
-    ErrorComponent
+    ErrorComponent,
+    CategorypickerComponent
   ],
   imports: [
     BrowserModule,

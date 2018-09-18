@@ -15,23 +15,7 @@
         <div class="rule-arrow">
           <mat-icon>arrow_right_alt</mat-icon>
         </div>
-        <mat-form-field class="rule-info">
-          <input type="text" matInput [matAutocomplete]="auto" [value]="rule.category" placeholder="Category" (blur)="setCategory($event.target.value, rule)">
-        </mat-form-field>
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let category of rule.availableCategories" [value]="category.name" class="category-option">
-            <div class="category-option">
-              <span class="category-option-name">{{category.name}}</span>
-              <div class="option-color-square" [style.background]="category.color"></div>
-              <button mat-icon-button (click)="removeCategory(rule, category.name)">
-                <mat-icon>close</mat-icon>
-              </button>
-            </div>
-          </mat-option>
-        </mat-autocomplete>
-        <div class="color-square" [style.background]="rule.categoryColor" [(colorPicker)]="rule.categoryColor"
-          cpPosition="left">
-        </div>
+        <app-categorypicker class="rule-info" [item]="rule"></app-categorypicker>
         <button mat-icon-button (click)="copy(rule)">
           <mat-icon>file_copy</mat-icon>
         </button>

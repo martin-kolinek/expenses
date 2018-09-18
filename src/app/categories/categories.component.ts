@@ -32,17 +32,9 @@ export class CategoriesComponent implements OnInit {
     this.rules = this.rules.filter(p => p != item)
   }
 
-  setCategory(name: string, rule: EditableRule) {
-    rule.category = name
-  }
-
   async save() {
     this.progress.executeWithProgress(async () => {
       await this.data.setRules(this.rules)
     })
-  }
-
-  removeCategory(rule: EditableRule, category: string) {
-    rule.deleteCategory(category)
   }
 }

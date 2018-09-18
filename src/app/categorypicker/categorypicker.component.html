@@ -1,0 +1,18 @@
+<div class="category-picker">
+  <mat-form-field class="category-picker-input">
+    <input type="text" matInput [matAutocomplete]="auto" [value]="item.category" placeholder="Category" (blur)="setCategory($event.target.value, item)">
+  </mat-form-field>
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let category of item.availableCategories" [value]="category.name" class="category-option">
+      <div class="category-option">
+        <span class="category-option-name">{{category.name}}</span>
+        <div class="option-color-square" [style.background]="category.color"></div>
+        <button mat-icon-button (click)="removeCategory(category.name)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </mat-option>
+  </mat-autocomplete>
+  <div class="color-square" [style.background]="item.categoryColor" [(colorPicker)]="item.categoryColor" cpPosition="left">
+  </div>
+</div>

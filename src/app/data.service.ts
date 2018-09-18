@@ -6,6 +6,13 @@ import { Settings } from './models/settings';
 import { utc } from 'moment';
 const randomColor = require('randomcolor')
 
+export interface HasCategory {
+  category: string;
+  categoryColor: string;
+  readonly availableCategories: Category[]
+  deleteCategory(category: string)
+}
+
 export class CategoriesContainer {
   constructor(public categories: Category[]) {
   }
@@ -31,7 +38,7 @@ export class CategoriesContainer {
   }
 }
 
-export class EditableRule {
+export class EditableRule implements HasCategory {
   constructor(private categories: CategoriesContainer, rule: CategoryRule) {
     this.property = rule.property
     this.substring = rule.substring
