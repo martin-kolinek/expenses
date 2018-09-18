@@ -19,10 +19,13 @@
           <input type="text" matInput [matAutocomplete]="auto" [value]="rule.category" placeholder="Category" (blur)="setCategory($event.target.value, rule)">
         </mat-form-field>
         <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let category of rule.availableCategories" [value]="category" class="category-option">
+          <mat-option *ngFor="let category of rule.availableCategories" [value]="category.name" class="category-option">
             <div class="category-option">
-              <span>{{category}}</span>
-              <div class="option-color-square" [style.background]="rule.categoryColor"></div>
+              <span class="category-option-name">{{category.name}}</span>
+              <div class="option-color-square" [style.background]="category.color"></div>
+              <button mat-icon-button (click)="removeCategory(rule, category.name)">
+                <mat-icon>close</mat-icon>
+              </button>
             </div>
           </mat-option>
         </mat-autocomplete>

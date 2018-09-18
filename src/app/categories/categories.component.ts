@@ -37,4 +37,8 @@ export class CategoriesComponent implements OnInit {
       await this.data.setRules(this.rules)
     })
   }
+
+  removeCategory(rule: EditableRule, category: string) {
+    rule.deleteCategory(category)
+  }
 }

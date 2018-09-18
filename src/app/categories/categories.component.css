@@ -32,4 +32,9 @@ mat-list-item.rule-line {
     width: 15px;
     height: 15px;
     margin-left: 10px;
+    margin-right: 20px;
+}
+
+.category-option-name {
+    flex-grow: 1;
 }

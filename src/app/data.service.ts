@@ -26,10 +26,6 @@ export class CategoriesContainer {
     return newCategory
   }
 
-  getCategories(): string[] {
-    return this.categories.map(p => p.name)
-  }
-
   deleteCategory(category: string) {
     this.categories = this.categories.filter(p => p.name != category)
   }
@@ -64,8 +60,8 @@ export class EditableRule {
     this._category.color = color
   }
 
-  get availableCategories(): string[] {
-    return this.categories.getCategories()
+  get availableCategories(): Category[] {
+    return this.categories.categories
   }
 
   createRule(): CategoryRule {
