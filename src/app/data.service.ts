@@ -38,16 +38,10 @@ export class CategoriesContainer {
   }
 }
 
-export class EditableRule implements HasCategory {
-  constructor(private categories: CategoriesContainer, rule: CategoryRule) {
-    this.property = rule.property
-    this.substring = rule.substring
-    this.category = rule.category
+class ItemWithCategory implements HasCategory {
+  constructor(protected categories: CategoriesContainer, categoryName: string) {
+    this.category = categoryName
   }
-
-  property: keyof DataRecord | "any"
-
-  substring: string
 
   private _category: Category
 
@@ -71,6 +65,27 @@ export class EditableRule implements HasCategory {
     return this.categories.categories
   }
 
+  deleteCategory(category: string) {
+    this.categories.deleteCategory(category)
+  }
+
+  createCategories() {
+    return this.categories.categories
+  }
+}
+
+export class EditableRule extends ItemWithCategory {
+
+  constructor(categories: CategoriesContainer, rule: CategoryRule) {
+    super(categories, rule.category)
+    this.property = rule.property
+    this.substring = rule.substring
+  }
+
+  property: keyof DataRecord | "any"
+
+  substring: string
+
   createRule(): CategoryRule {
     return {
       category: this.category,
@@ -79,16 +94,14 @@ export class EditableRule implements HasCategory {
     }
   }
 
-  createCategories() {
-    return this.categories.categories
-  }
-
-  deleteCategory(category: string) {
-    this.categories.deleteCategory(category)
-  }
-
   clone(): EditableRule {
     return new EditableRule(this.categories, this.createRule())
+  }
+}
+
+export class EditableRecord extends ItemWithCategory {
+  constructor(categories: CategoriesContainer, public record: DataRecord) {
+    super(categories, record.category)
   }
 }
 
@@ -99,8 +112,12 @@ export class DataService {
 
   constructor(private drive: DriveService, private settings: SettingsService) { }
 
-  async getRecords(): Promise<DataRecord[]> {
-    return Object.values((await this.getData()).expenses.records)
+  async getRecords(): Promise<EditableRecord[]> {
+    const data = await this.getData()
+    const records = Object.values(data.expenses.records)
+    const categoryContainer = this.getCategoryContainer(data)
+
+    return records.map(p => new EditableRecord(categoryContainer, p))
   }
 
   async addRecords(records: DataRecord[]) {
@@ -120,16 +137,7 @@ export class DataService {
     const data = await this.getData()
 
     var rules = data.expenses.rules
-    const categories = data.expenses.categories || []
-
-    if (!categories.filter(p => p.name == unknownCategory).length) {
-      categories.push({
-        color: "#888888",
-        name: unknownCategory
-      })
-    }
-
-    const categoryContainer = new CategoriesContainer(categories)
+    const categoryContainer = this.getCategoryContainer(data);
 
     if (!rules || !Array.isArray(rules)) {
       console.log("Empty rules")
@@ -193,5 +201,17 @@ export class DataService {
     }
 
     return { expenses: data, settings: settings }
+  }
+
+  private getCategoryContainer(data: { expenses: ExpensesData; settings: Settings; }) {
+    const categories = data.expenses.categories || [];
+    if (!categories.filter(p => p.name == unknownCategory).length) {
+      categories.push({
+        color: "#888888",
+        name: unknownCategory
+      });
+    }
+    const categoryContainer = new CategoriesContainer(categories);
+    return categoryContainer;
   }
 }

@@ -18,6 +18,8 @@
 
 .category-option-name {
     flex-grow: 1;
+    max-width: 20em;
+    overflow: hidden;
 }
 
 .category-picker {

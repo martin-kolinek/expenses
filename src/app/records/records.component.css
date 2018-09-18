@@ -1,0 +1,18 @@
+.record-title {
+    align-items: center;
+}
+
+.record-item-date {
+    width: 10em;
+    margin-right: 20px;
+}
+
+.record-item-amount {
+    width: 10em;
+    margin-right: 20px;
+}
+
+.record-item-category {
+    margin-bottom: -1em;
+    min-width: 20em;
+}

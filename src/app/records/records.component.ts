@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { DataService } from '../data.service';
+import { DataService, EditableRecord } from '../data.service';
 import { ProgressService } from '../progress.service';
 import { DataRecord } from '../models/data';
 import { PageEvent } from '@angular/material/paginator';
@@ -11,8 +11,8 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class RecordsComponent implements OnInit {
 
-  records: DataRecord[] = []
-  displayedRecords: DataRecord[] = []
+  records: EditableRecord[] = []
+  displayedRecords: EditableRecord[] = []
 
   constructor(private progress: ProgressService, private dataService: DataService) {
   }
