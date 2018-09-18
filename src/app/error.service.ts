@@ -9,7 +9,7 @@ export class GlobalErrorHandler implements ErrorHandler {
   handleError(error) {
     this.injector.get(ErrorService).postError()
 
-    //throw error;
+    throw error;
   }
 
 }

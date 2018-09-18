@@ -4,10 +4,11 @@ import LazyPromise from 'lazy-promise'
 import { lazy } from './util'
 import { PapaParseResult } from 'ngx-papaparse/lib/interfaces/papa-parse-result';
 import { utc } from 'moment'
-import { DataRecord } from './models/data';
+import { DataRecord, unknownCategory, BasicDataRecord } from './models/data';
 import { DataService } from './data.service';
 import { ImportInfo } from './models/settings';
 import { SettingsService } from './settings.service';
+import { codec, hash } from 'sjcl'
 
 export class ParseData {
   private strPromise: Promise<string>
@@ -32,7 +33,7 @@ export class ParseData {
 
     this.linesPromise = lazy(async () => {
       const str = await this.strPromise
-      const result =  str.split(/\r?\n/).filter(p => p)
+      const result = str.split(/\r?\n/).filter(p => p)
       result.splice(0, this.skipLines)
       return result
     })
@@ -70,12 +71,18 @@ export class ParseData {
   async getResult(importInfo: ImportInfo): Promise<DataRecord[]> {
     const result = await this.parseResultPromise
     return (result.data as object[]).map(x => {
-      return {
+      const inputData = {
         date: utc(this.joinField(x, "date", importInfo), "DD.MM.YYYY").format(),
         amount: Number.parseFloat(this.joinField(x, "amount", importInfo).replace(",", ".")),
         currency: this.joinField(x, "currency", importInfo),
         contraAccount: this.joinField(x, "contraAccount", importInfo),
         description: this.joinField(x, "description", importInfo),
+      }
+      return {
+        ...inputData,
+        category: unknownCategory,
+        userSetCategory: false,
+        id: codec.base64.fromBits(hash.sha256.hash(JSON.stringify(inputData)))
       }
     })
   }
@@ -94,18 +101,6 @@ export class ParseData {
 export class ImportService {
 
   constructor(private papa: Papa, private dataService: DataService, private settings: SettingsService) { }
-
-  private defaultRecord: DataRecord = {
-    date: utc().format(),
-    amount: 0,
-    currency: "",
-    contraAccount: "",
-    description: ""
-  }
-
-  getDestinationColumns(): string[] {
-    return Object.keys(this.defaultRecord)
-  }
 
   getParseData(input: File, encoding: string, skipLines: number) {
     return new ParseData(input, encoding, skipLines, this.papa, this.settings)

@@ -21,6 +21,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AppRoutingModule } from './/app-routing.module';
 import { SettingsComponent } from './settings/settings.component';
@@ -66,10 +68,12 @@ import { ErrorComponent } from './error/error.component'
     MatExpansionModule,
     MatPaginatorModule,
     MatSnackBarModule,
+    MatAutocompleteModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    PapaParseModule
+    PapaParseModule,
+    ColorPickerModule
   ],
   providers: [{
     provide: ErrorHandler,

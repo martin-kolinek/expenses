@@ -1,4 +1,44 @@
-<app-shell>
-  <button (click)="test()">Test</button>
-  
+<app-shell title="Categories" [toolbarTemplate]="toolbar">
+  <mat-list class="mat-elevation-z2 rule-list">
+    <ng-container *ngFor="let rule of rules; last as isLast">
+      <mat-list-item class="rule-line">
+        <mat-form-field class="rule-info">
+          <mat-select [(value)]="rule.property" placeholder="Property">
+            <mat-option *ngFor="let property of properties" [value]="property">
+              {{property}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="rule-info">
+          <input type="text" matInput [(ngModel)]="rule.substring" placeholder="Contains">
+        </mat-form-field>
+        <div class="rule-arrow">
+          <mat-icon>arrow_right_alt</mat-icon>
+        </div>
+        <mat-form-field class="rule-info">
+          <input type="text" matInput [matAutocomplete]="auto" [value]="rule.category" placeholder="Category" (blur)="setCategory($event.target.value, rule)">
+        </mat-form-field>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let category of rule.availableCategories" [value]="category" class="category-option">
+            <div class="category-option">
+              <span>{{category}}</span>
+              <div class="option-color-square" [style.background]="rule.categoryColor"></div>
+            </div>
+          </mat-option>
+        </mat-autocomplete>
+        <div class="color-square" [style.background]="rule.categoryColor" [(colorPicker)]="rule.categoryColor"
+          cpPosition="left">
+        </div>
+        <button mat-icon-button (click)="copy(rule)">
+          <mat-icon>file_copy</mat-icon>
+        </button>
+      </mat-list-item>
+      <mat-divider *ngIf="!isLast"></mat-divider>
+    </ng-container>
+  </mat-list>
 </app-shell>
+<ng-template #toolbar>
+  <button mat-icon-button (click)="save()" aria-label="Save" alt="Save">
+    <mat-icon>save</mat-icon>
+  </button>
+</ng-template>

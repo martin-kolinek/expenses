@@ -15,7 +15,7 @@
       <button mat-icon-button (click)="sidenav.open()">
         <mat-icon>menu</mat-icon>
       </button>
-      <h1 class="top-header">Expenses</h1>
+      <h1 class="top-header">{{title}}</h1>
       <ng-container *ngTemplateOutlet="toolbarTemplate ? toolbarTemplate : nothing">
       </ng-container>
     </mat-toolbar>

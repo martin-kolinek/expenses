@@ -1,0 +1,35 @@
+.rule-list {
+    padding-top: 0
+}
+
+.rule-info {
+    flex-grow: 1;
+    margin-bottom: -1em;
+    margin-right: 20px;
+}
+
+.rule-arrow {
+    margin-right: 20px;
+    margin-bottom: -1em;
+}
+
+mat-list-item.rule-line {
+    height: 4em;
+}
+
+.color-square {
+    width: 20px;
+    height: 20px;
+    margin-right: 20px;
+}
+
+.category-option {
+    display: flex;
+    align-items: center;
+}
+
+.option-color-square {
+    width: 15px;
+    height: 15px;
+    margin-left: 10px;
+}

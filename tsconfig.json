@@ -17,7 +17,8 @@
     "types": [
       "gapi",
       "gapi.auth2",
-      "gapi.drive"
+      "gapi.drive",
+      "node"
     ],
     "lib": [
       "es2017",

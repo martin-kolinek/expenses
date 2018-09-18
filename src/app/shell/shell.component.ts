@@ -9,6 +9,8 @@ export class ShellComponent implements OnInit {
 
   @Input() toolbarTemplate: TemplateRef<any>
 
+  @Input() title: String
+
   constructor() { }
 
   ngOnInit() {

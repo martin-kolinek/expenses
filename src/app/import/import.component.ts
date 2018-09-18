@@ -4,6 +4,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { ImportService } from '../import.service';
 import { ImportInfo } from '../models/settings'
 import { Papa } from 'ngx-papaparse';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-import',
@@ -42,10 +43,10 @@ export class ImportComponent implements OnInit {
     this.read()
   }
 
-  constructor(private progress: ProgressService, private importService: ImportService, private papa: Papa) { }
+  constructor(private progress: ProgressService, private importService: ImportService, private dataService: DataService) { }
 
   ngOnInit() {
-    this.outputColumns = this.importService.getDestinationColumns()
+    this.outputColumns = this.dataService.getRecordProperties()
   }
 
   async upload() {
