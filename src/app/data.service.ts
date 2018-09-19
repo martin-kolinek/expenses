@@ -180,10 +180,40 @@ export class DataService {
     const data = await this.getData()
     data.expenses.categories = categories
     data.expenses.rules = dataRules
-    if (!data.settings.selectedDataFile) {
-      throw new Error("No selected file")
+    await this.saveData(data);
+  }
+
+  async categorize() {
+    const data = await this.getData()
+    for (var id in data.expenses.records) {
+      const record = data.expenses.records[id]
+
+      for (var rule of data.expenses.rules) {
+        if (!record.userSetCategory && this.matches(rule, record)) {
+          record.category = rule.category
+          break;
+        }
+      }
     }
-    await this.drive.updateJsonFile(data.settings.selectedDataFile, data.expenses)
+
+    await this.saveData(data)
+  }
+
+  private matches(rule: CategoryRule, record: DataRecord) {
+    for (var property in this.defaultRecord) {
+      if ((property == rule.property || rule.property == anyProperty) && record[property].toString().toLowerCase().includes(rule.substring.toLowerCase())) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  private async saveData(data: { expenses: ExpensesData; settings: Settings; }) {
+    if (!data.settings.selectedDataFile) {
+      throw new Error("No selected file");
+    }
+    await this.drive.updateJsonFile(data.settings.selectedDataFile, data.expenses);
   }
 
   readonly defaultData: ExpensesData = { records: {}, categories: [], rules: [] }
