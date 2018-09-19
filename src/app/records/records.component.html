@@ -9,7 +9,9 @@
           <div class="record-item record-item-amount">
             {{record.record.amount}} {{record.record.currency}}
           </div>
-          <app-categorypicker class="record-item record-item-category" [item]="record"></app-categorypicker>
+          <div class="record-item record-item-category" (click)="$event.stopPropagation()">
+            <app-categorypicker [item]="record"></app-categorypicker>
+          </div>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <p>Contra Account: {{record.record.contraAccount}}</p>

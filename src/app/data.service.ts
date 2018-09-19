@@ -186,18 +186,19 @@ export class DataService {
     await this.drive.updateJsonFile(data.settings.selectedDataFile, data.expenses)
   }
 
+  readonly defaultData: ExpensesData = { records: {}, categories: [], rules: [] }
+
   private async getData(): Promise<{ expenses: ExpensesData, settings: Settings }> {
     const settings = await this.settings.getSettings()
 
-    const defaultData = { records: {}, categories: [], rules: [] }
 
     if (!settings.selectedDataFile)
-      return { expenses: defaultData, settings: settings }
+      return { expenses: this.defaultData, settings: settings }
 
     var data = (await this.drive.loadJsonFile(settings.selectedDataFile)) as ExpensesData
 
     if (!data || typeof data != "object") {
-      return { expenses: defaultData, settings: settings }
+      return { expenses: this.defaultData, settings: settings }
     }
 
     return { expenses: data, settings: settings }

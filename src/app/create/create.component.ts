@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DriveService } from '../drive.service';
 import { SettingsService } from '../settings.service';
 import { ProgressService } from '../progress.service';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-create',
@@ -19,7 +20,8 @@ export class CreateComponent implements OnInit {
     private drive: DriveService,
     private settings: SettingsService,
     private router: Router,
-    private progress: ProgressService) { }
+    private progress: ProgressService,
+    private data: DataService) { }
 
   async ngOnInit() {
   }
@@ -36,7 +38,7 @@ export class CreateComponent implements OnInit {
         throw new Error("ID not defined")
       }
 
-      const fileId = await this.drive.createJsonFile(id, this.fileName, { test: "casdf" })
+      const fileId = await this.drive.createJsonFile(id, this.fileName, this.data.defaultData)
       await this.settings.addFile(this.name, fileId)
       this.router.navigate(["/settings"])
     })
