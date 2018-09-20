@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService, EditableRule } from '../data.service';
+import { DataService } from '../data.service';
 import { ProgressService } from '../progress.service';
 import { anyProperty } from '../models/data';
+import { EditableRule } from '../models/editable';
 
 @Component({
   selector: 'app-categories',

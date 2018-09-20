@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { HasCategory } from '../data.service';
+import { HasCategory } from '../models/editable';
 
 @Component({
   selector: 'app-categorypicker',

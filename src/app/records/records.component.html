@@ -4,7 +4,7 @@
       <mat-expansion-panel-header expandedHeight="4em" collapsedHeight="4em">
         <mat-panel-title class="record-title">
           <div class="record-item record-item-date">
-            {{record.record.date}}
+            {{record.date.format("MMM DD, YYYY")}}
           </div>
           <div class="record-item record-item-amount">
             {{record.record.amount}} {{record.record.currency}}
