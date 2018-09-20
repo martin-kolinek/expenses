@@ -5,17 +5,17 @@
 .record-item-date {
     width: 6em;
     margin-right: 20px;
-    margin-bottom: -0.6em;
 }
 
 .record-item-amount {
     width: 10em;
     margin-right: 30px;
-    margin-bottom: -0.6em;
     text-align: right;
 }
 
-.record-item-category {
-    margin-bottom: -1em;
-    min-width: 20em;
+.record-color-rect {
+    width: 15px;
+    height: 15px;
+    margin-left: 10px;
+    display: inline-block;
 }

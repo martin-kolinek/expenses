@@ -1,4 +1,4 @@
-<app-shell [toolbarTemplate]="testTemplate" title="Records">
+<app-shell title="Records">
   <mat-accordion>
     <mat-expansion-panel *ngFor="let record of displayedRecords">
       <mat-expansion-panel-header expandedHeight="4em" collapsedHeight="4em">
@@ -9,9 +9,10 @@
           <div class="record-item record-item-amount">
             {{record.record.amount}} {{record.record.currency}}
           </div>
-          <div class="record-item record-item-category" (click)="$event.stopPropagation()">
-            <app-categorypicker [item]="record"></app-categorypicker>
+          <div class="record-item record-item-category">
+            {{record.category}}
           </div>
+          <div class="record-color-rect" [style.background]="record.categoryColor"></div>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <p>Contra Account: {{record.record.contraAccount}}</p>
@@ -21,5 +22,3 @@
   <mat-paginator [length]="records.length" pageSize="20" [pageSizeOptions]="[10, 20, 50, 100, 200]" (page)="changePage($event.pageIndex, $event.pageSize)">
   </mat-paginator>
 </app-shell>
-<ng-template #testTemplate>
-</ng-template>

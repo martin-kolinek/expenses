@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService, EditableRule } from '../data.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProgressService } from '../progress.service';
 import { anyProperty } from '../models/data';
 
