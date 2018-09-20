@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DriveService } from './drive.service';
-import { Settings, DataFile, ImportInfo } from './models/settings';
+import { Settings, DataFile, ImportInfo, FilterSettings } from './models/settings';
 import LazyPromise from 'lazy-promise'
 import { reject } from 'q';
 import { lazy } from './util';
@@ -96,6 +96,18 @@ export class SettingsService {
     return stored
   }
 
+  async getFilters(): Promise<FilterSettings[]> {
+    await this.ensureSettings()
+
+    if (!this.settings.filters || !Array.isArray(this.settings.filters)) {
+      console.log("Abcd " + this.settings.filters)
+      this.settings.filters = this.defaultFilters
+      console.log("Abcd " + this.settings.filters[0])
+    }
+
+    return this.settings.filters
+  }
+
   private hashKey(key: object) {
     return codec.hex.fromBits(hash.sha256.hash(JSON.stringify(key)));
   }
@@ -113,11 +125,21 @@ export class SettingsService {
     }
   }
 
+  private readonly defaultFilters: FilterSettings[] = [{
+    name: "default",
+    sortDirection: "desc",
+    sortColumn: "date",
+    excludedCategories: [],
+    start: null,
+    end: null
+  }];
+
   private createLoadPromise() {
     const defaultSettings = {
       dataFiles: [],
       selectedDataFile: undefined,
-      importInfo: {}
+      importInfo: {},
+      filters: this.defaultFilters
     };
 
     this.loadPromise = lazy(async () => {

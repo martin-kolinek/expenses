@@ -1,0 +1,7 @@
+<mat-form-field class="rule-info">
+  <mat-select [(value)]="selectedFilter" placeholder="Filter">
+    <mat-option *ngFor="let filter of filters" [value]="filter">
+      {{filter ? filter.name : "Create new" }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

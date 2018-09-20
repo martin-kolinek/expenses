@@ -37,7 +37,8 @@ import { CategoriesComponent } from './categories/categories.component';
 
 import { GlobalErrorHandler } from './error.service';
 import { ErrorComponent } from './error/error.component';
-import { CategorypickerComponent } from './categorypicker/categorypicker.component'
+import { CategorypickerComponent } from './categorypicker/categorypicker.component';
+import { FilterComponent } from './filter/filter.component'
 
 @NgModule({
   declarations: [
@@ -50,8 +51,10 @@ import { CategorypickerComponent } from './categorypicker/categorypicker.compone
     ShellComponent,
     CategoriesComponent,
     ErrorComponent,
-    CategorypickerComponent
+    CategorypickerComponent,
+    FilterComponent
   ],
+  entryComponents: [FilterComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
