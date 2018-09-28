@@ -1,0 +1,18 @@
+.filter-selection {
+    display: block;
+}
+
+.filter-line {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.filter-column {
+    flex-grow: 1;
+    margin-right: 2em;
+}
+
+.filter-name {
+    flex-grow: 1;
+}

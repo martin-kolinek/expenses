@@ -1,7 +1,42 @@
-<mat-form-field class="rule-info">
-  <mat-select [(value)]="selectedFilter" placeholder="Filter">
+<mat-form-field class="filter-selection">
+  <mat-select [value]="selectedFilter" placeholder="Filter" (selectionChange)="setFilter($event.value)">
     <mat-option *ngFor="let filter of filters" [value]="filter">
-      {{filter ? filter.name : "Create new" }}
+      {{filter == "new" ? "Create new" : filter.name }}
     </mat-option>
   </mat-select>
 </mat-form-field>
+<div class="filter-line">
+  <mat-form-field>
+    <input matInput [matDatepicker]="datepickerStart" placeholder="Date From" [(ngModel)]="start">
+    <mat-datepicker-toggle matSuffix [for]="datepickerStart"></mat-datepicker-toggle>
+    <mat-datepicker #datepickerStart></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [matDatepicker]="datepickerEnd" placeholder="Date To" [(ngModel)]="end">
+    <mat-datepicker-toggle matSuffix [for]="datepickerEnd"></mat-datepicker-toggle>
+    <mat-datepicker #datepickerEnd></mat-datepicker>
+  </mat-form-field>
+</div>
+<div class="filter-line">
+  <mat-form-field class="filter-column">
+    <mat-select [(value)]="sortColumn" placeholder="Sort Column">
+      <mat-option value="date">
+        Date
+      </mat-option>
+      <mat-option value="amount">
+        Amount
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-slide-toggle [(ngModel)]="sortDirection">{{sortDirectionLabel}}</mat-slide-toggle>
+</div>
+<div *ngIf="selectedFilter == 'new'" class="filter-line">
+  <mat-form-field class="filter-name">
+    <input matInput type="text" placeholder="Name" [(ngModel)]="name" required>
+  </mat-form-field>
+</div>
+<div class="form-button-container">
+  <button mat-fab color="primary" (click)="apply()">
+    <mat-icon>check</mat-icon>
+  </button>
+</div>

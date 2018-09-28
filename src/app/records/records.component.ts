@@ -47,6 +47,8 @@ export class RecordsComponent implements OnInit {
   filter() {
     const dialogRef = this.dialog.open(FilterComponent)
     dialogRef.afterClosed().subscribe(result => {
+      if (!result) return
+
       this.records = this.filterService.filterRecords(this.allRecords, result as FilterSettings)
       this.changePage(this.pageIndex, this.pageSize)
     })

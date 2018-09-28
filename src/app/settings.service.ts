@@ -105,7 +105,7 @@ export class SettingsService {
       console.log("Abcd " + this.settings.filters[0])
     }
 
-    return this.settings.filters
+    return this.settings.filters.slice()
   }
 
   private hashKey(key: object) {

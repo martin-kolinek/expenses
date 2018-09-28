@@ -11,17 +11,7 @@ export class FilterService {
   constructor() { }
 
   filterRecords(records: EditableRecord[], filter: FilterSettings): EditableRecord[] {
-    var filt = (x: EditableRecord) => !filter.excludedCategories.includes(x.category)
-    if (filter.start) {
-      const start = utc(filter.start)
-      filt = x => filt(x) && x.date.isSameOrAfter(start)
-    }
-    if (filter.end) {
-      const end = utc(filter.end)
-      filt = x => filt(x) && x.date.isSameOrAfter(end)
-    }
-
-    const result = records.filter(filt)
+    const result = records.filter(x => this.filterRecord(x, filter))
 
     result.sort((a, b) => {
       var mult = 1
@@ -49,5 +39,12 @@ export class FilterService {
     })
 
     return result
+  }
+
+  private filterRecord(record: EditableRecord, filter: FilterSettings) {
+    if (filter.excludedCategories.includes(record.category)) return false
+    if (filter.start && utc(filter.start).isAfter(record.date)) return false
+    if (filter.end && utc(filter.end).isBefore(record.date)) return false
+    return true
   }
 }

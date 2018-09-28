@@ -23,6 +23,11 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { AppRoutingModule } from './/app-routing.module';
 import { SettingsComponent } from './settings/settings.component';
@@ -32,7 +37,6 @@ import { ImportComponent } from './import/import.component';
 import { RecordsComponent } from './records/records.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ShellComponent } from './shell/shell.component';
-import { MatPaginatorModule } from '@angular/material/paginator';
 import { CategoriesComponent } from './categories/categories.component';
 
 import { GlobalErrorHandler } from './error.service';
@@ -74,6 +78,8 @@ import { FilterComponent } from './filter/filter.component'
     MatPaginatorModule,
     MatSnackBarModule,
     MatAutocompleteModule,
+    MatDatepickerModule,
+    MatSlideToggleModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
@@ -83,7 +89,27 @@ import { FilterComponent } from './filter/filter.component'
   providers: [{
     provide: ErrorHandler,
     useClass: GlobalErrorHandler
-  }],
+  },
+  {
+    provide: DateAdapter,
+    useClass: MomentDateAdapter,
+    deps: [MAT_DATE_LOCALE]
+  },
+  {
+    provide: MAT_DATE_FORMATS,
+    useValue: {
+      parse: {
+        dateInput: "ll"
+      },
+      display: {
+        dateInput: "ll",
+        monthYearLabel: "MMM YYYY",
+        dateA11yLabel: "ll",
+        monthYearA11yLabel: "MMMM YYYY"
+      }
+    }
+  }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

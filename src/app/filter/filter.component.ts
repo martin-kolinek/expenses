@@ -13,8 +13,9 @@ import { Moment, utc } from 'moment';
 export class FilterComponent implements OnInit {
 
   existingFilters
-  filters: (FilterSettings | null)[];
-  selectedFilter: FilterSettings | null
+  filters: (FilterSettings | "new")[];
+  selectedFilter: FilterSettings | "new"
+  sortDirectionLabel: string
 
   private _start: Moment | null
   get start() { return this._start }
@@ -26,8 +27,12 @@ export class FilterComponent implements OnInit {
   get sortColumn() { return this._sortColumn }
   set sortColumn(c: SortColumnType) { this._sortColumn = c; this.changed = true }
   private _sortDirection: SortDirectionType
-  get sortDirection() { return this._sortDirection }
-  set sortDirection(d: SortDirectionType) { this._sortDirection = d; this.changed = true }
+  get sortDirection() { return this._sortDirection == "asc" }
+  set sortDirection(d: boolean) {
+    this._sortDirection = d ? "asc" : "desc";
+    this.sortDirectionLabel = d ? "Ascending" : "Descending"
+    this.changed = true
+  }
   private _name: string
   get name() { return this._name }
   set name(n: string) { this._name = n; this.changed = true }
@@ -38,14 +43,16 @@ export class FilterComponent implements OnInit {
   ngOnInit() {
     this.progress.executeWithProgress(async () => {
       this.filters = await this.settings.getFilters()
-      this.selectedFilter = this.filters[0]
-      this.filters.push(null)
+      this.filters.push("new")
+      this.setFilter(this.filters[0])
     })
   }
 
-  setFilter(filter: FilterSettings | null) {
-    if (!filter) {
+  setFilter(filter: FilterSettings | "new") {
+    this.selectedFilter = filter
+    if (filter == "new") {
       this.changed = false
+      this.name = ""
       return
     }
 
@@ -64,13 +71,24 @@ export class FilterComponent implements OnInit {
     }
 
     this.sortColumn = filter.sortColumn
-    this.sortDirection = filter.sortDirection
+    this.sortDirection = filter.sortDirection == "asc"
     this.name = filter.name
     this.changed = false
   }
 
   apply() {
-    this.dialogRef.close()
+    if (!this.name) {
+      return
+    }
+
+    this.dialogRef.close({
+      name: this.name,
+      sortDirection: this._sortDirection,
+      sortColumn: this.sortColumn,
+      excludedCategories: [],
+      start: this.start ? this.start.utc() : null,
+      end: this.end ? this.end.utc() : null
+    })
   }
 
 }
