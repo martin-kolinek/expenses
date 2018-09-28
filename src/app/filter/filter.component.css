@@ -16,3 +16,17 @@
 .filter-name {
     flex-grow: 1;
 }
+
+.filter-color-rect {
+    width: 20px;
+    height: 20px;
+}
+
+.filter-category {
+    display:flex;
+    align-items: center;
+}
+
+.filter-category-label {
+    flex-grow: 1;
+}

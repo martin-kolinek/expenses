@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ExpensesData, unknownCategory, CategoryRule, DataRecord, anyProperty, BasicDataRecord, ImportInfo, FilterSettings } from './models/data';
+import { ExpensesData, unknownCategory, CategoryRule, DataRecord, anyProperty, BasicDataRecord, ImportInfo, FilterSettings, Category } from './models/data';
 import { CategoriesContainer, EditableRecord, EditableRule } from './models/editable';
 import { utc } from 'moment';
 import { DataService } from './data.service';
@@ -93,7 +93,12 @@ export class RecordsService {
     })
   }
 
-  private getCategoryContainer(expenses: ExpensesData) {
+  async getCategories(): Promise<Category[]> {
+    const data = await this.data.getData()
+    return this.getCategoryContainer(data).categories
+  }
+
+  private getCategoryContainer(expenses: ExpensesData): CategoriesContainer {
     const categories = expenses.categories || [];
     if (!categories.filter(p => p.name == unknownCategory).length) {
       categories.push({

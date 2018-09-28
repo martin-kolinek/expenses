@@ -19,6 +19,7 @@ export class RecordsComponent implements OnInit {
   displayedRecords: EditableRecord[] = []
   pageIndex = 0
   pageSize = 20
+  currentFilter: FilterSettings
 
   constructor(private progress: ProgressService,
     private recordService: RecordsService,
@@ -28,10 +29,10 @@ export class RecordsComponent implements OnInit {
 
   async ngOnInit() {
     this.progress.executeWithProgress(async () => {
-      const filter = (await this.filterService.getFilters())[0]
+      this.currentFilter = (await this.filterService.getFilters())[0]
 
       this.allRecords = await this.recordService.getRecords()
-      this.records = this.filterService.filterRecords(this.allRecords, filter)
+      this.records = this.filterService.filterRecords(this.allRecords, this.currentFilter)
       this.changePage(this.pageIndex, this.pageSize)
     })
   }
@@ -43,11 +44,12 @@ export class RecordsComponent implements OnInit {
   }
 
   filter() {
-    const dialogRef = this.dialog.open(FilterComponent)
+    const dialogRef = this.dialog.open(FilterComponent, { data: this.currentFilter })
     dialogRef.afterClosed().subscribe(result => {
       if (!result) return
 
-      this.records = this.filterService.filterRecords(this.allRecords, result as FilterSettings)
+      this.currentFilter = result as FilterSettings
+      this.records = this.filterService.filterRecords(this.allRecords, this.currentFilter)
       this.changePage(this.pageIndex, this.pageSize)
     })
   }

@@ -35,6 +35,18 @@
     <input matInput type="text" placeholder="Name" [(ngModel)]="name" required>
   </mat-form-field>
 </div>
+<div>
+  <mat-selection-list #categoryControl>
+    <mat-list-option *ngFor="let category of categories" [selected]="category.selected" [value]="category.name">
+      <div class="filter-category">
+        <div class="filter-category-label">
+          {{category.name}}
+        </div>
+        <div class="filter-color-rect" [style.background]="category.color"></div>
+      </div>
+    </mat-list-option>
+  </mat-selection-list>
+</div>
 <div class="form-button-container">
   <button mat-fab color="primary" (click)="apply()">
     <mat-icon>check</mat-icon>
