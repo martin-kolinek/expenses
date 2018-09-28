@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from '../data.service';
 import { ProgressService } from '../progress.service';
 import { anyProperty } from '../models/data';
 import { EditableRule } from '../models/editable';
+import { RecordsService } from '../records.service';
 
 @Component({
   selector: 'app-categories',
@@ -13,12 +13,12 @@ export class CategoriesComponent implements OnInit {
   rules: EditableRule[];
   properties: string[]
 
-  constructor(private data: DataService, private progress: ProgressService) { }
+  constructor(private records: RecordsService, private progress: ProgressService) { }
 
   async ngOnInit() {
-    this.properties = this.data.getRecordProperties().concat(anyProperty)
+    this.properties = this.records.getRecordProperties().concat(anyProperty)
     this.progress.executeWithProgress(async () => {
-      this.rules = await this.data.getRules()
+      this.rules = await this.records.getRules()
     })
   }
 
@@ -34,8 +34,8 @@ export class CategoriesComponent implements OnInit {
 
   async save() {
     this.progress.executeWithProgress(async () => {
-      await this.data.setRules(this.rules)
-      await this.data.categorize()
+      await this.records.setRules(this.rules)
+      await this.records.categorize()
     })
   }
 }

@@ -17,7 +17,9 @@ export type DataRecord = BasicDataRecord & {
 export type ExpensesData = {
     records: { [id: string]: DataRecord }
     categories: Category[]
-    rules: CategoryRule[]
+    rules: CategoryRule[],
+    importInfo: { [key: string]: ImportInfo },
+    filters: { [name: string]: FilterSettings }
 }
 
 export type Category = {
@@ -33,3 +35,20 @@ export type CategoryRule = {
 
 export const unknownCategory = "unkwnown"
 export const anyProperty = "any"
+
+export type SortColumnType = "date" | "amount"
+
+export type SortDirectionType = "asc" | "desc"
+
+export type FilterSettings = {
+    name: string
+    sortDirection: "asc" | "desc"
+    sortColumn: "date" | "amount"
+    excludedCategories: string[]
+    start: string | null,
+    end: string | null
+}
+
+export type ImportInfo = {
+    [column: string]: string[]
+}

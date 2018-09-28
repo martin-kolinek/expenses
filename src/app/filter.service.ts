@@ -1,14 +1,34 @@
 import { Injectable } from '@angular/core';
 import { EditableRecord } from './models/editable';
-import { FilterSettings } from './models/settings';
+import { FilterSettings } from './models/data';
 import { utc } from 'moment'
+import { DataService } from './data.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FilterService {
 
-  constructor() { }
+  constructor(private data: DataService) { }
+
+  async getFilters(): Promise<FilterSettings[]> {
+    const data = await this.data.getData()
+
+    if (!data || !data.filters || !Object.values(data.filters)) {
+      return this.defaultFilters
+    }
+
+    return Object.values(data.filters).slice()
+  }
+
+  private readonly defaultFilters: FilterSettings[] = [{
+    name: "default",
+    sortDirection: "desc",
+    sortColumn: "date",
+    excludedCategories: [],
+    start: null,
+    end: null
+  }];
 
   filterRecords(records: EditableRecord[], filter: FilterSettings): EditableRecord[] {
     const result = records.filter(x => this.filterRecord(x, filter))

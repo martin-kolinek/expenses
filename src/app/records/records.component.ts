@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { DataService } from '../data.service';
 import { ProgressService } from '../progress.service';
 import { EditableRecord } from '../models/editable';
 import { MatDialog } from '@angular/material/dialog';
 import { FilterComponent } from '../filter/filter.component';
 import { FilterService } from '../filter.service';
-import { SettingsService } from '../settings.service';
-import { FilterSettings } from '../models/settings';
+import { FilterSettings } from '../models/data';
+import { RecordsService } from '../records.service';
 
 @Component({
   selector: 'app-records',
@@ -22,17 +21,16 @@ export class RecordsComponent implements OnInit {
   pageSize = 20
 
   constructor(private progress: ProgressService,
-    private dataService: DataService,
+    private recordService: RecordsService,
     private dialog: MatDialog,
-    private filterService: FilterService,
-    private settings: SettingsService) {
+    private filterService: FilterService) {
   }
 
   async ngOnInit() {
     this.progress.executeWithProgress(async () => {
-      const filter = (await this.settings.getFilters())[0]
+      const filter = (await this.filterService.getFilters())[0]
 
-      this.allRecords = await this.dataService.getRecords()
+      this.allRecords = await this.recordService.getRecords()
       this.records = this.filterService.filterRecords(this.allRecords, filter)
       this.changePage(this.pageIndex, this.pageSize)
     })

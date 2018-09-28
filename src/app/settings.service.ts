@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DriveService } from './drive.service';
-import { Settings, DataFile, ImportInfo, FilterSettings } from './models/settings';
-import LazyPromise from 'lazy-promise'
+import { Settings } from './models/settings';
 import { reject } from 'q';
 import { lazy } from './util';
-import { hash, codec } from 'sjcl'
 
 @Injectable({
   providedIn: 'root'
@@ -65,53 +63,6 @@ export class SettingsService {
     await this.saveSettings()
   }
 
-  async addImportInfo(key: object, importInfo: ImportInfo) {
-    await this.ensureSettings()
-
-    const keyHash = this.hashKey(key)
-
-    if (!this.settings.importInfo) {
-      this.settings.importInfo = {}
-    }
-
-    this.settings.importInfo[keyHash] = importInfo
-
-    await this.saveSettings()
-  }
-
-  async getImportInfo(key: object): Promise<ImportInfo> {
-    await this.ensureSettings()
-
-    const keyHash = this.hashKey(key)
-
-    if (!this.settings.importInfo) {
-      return {}
-    }
-
-    const stored = this.settings.importInfo[keyHash]
-
-    if (!stored) {
-      return {}
-    }
-    return stored
-  }
-
-  async getFilters(): Promise<FilterSettings[]> {
-    await this.ensureSettings()
-
-    if (!this.settings.filters || !Array.isArray(this.settings.filters)) {
-      console.log("Abcd " + this.settings.filters)
-      this.settings.filters = this.defaultFilters
-      console.log("Abcd " + this.settings.filters[0])
-    }
-
-    return this.settings.filters.slice()
-  }
-
-  private hashKey(key: object) {
-    return codec.hex.fromBits(hash.sha256.hash(JSON.stringify(key)));
-  }
-
   private async saveSettings() {
     await this.drive.saveSettings(this.settings);
   }
@@ -125,21 +76,10 @@ export class SettingsService {
     }
   }
 
-  private readonly defaultFilters: FilterSettings[] = [{
-    name: "default",
-    sortDirection: "desc",
-    sortColumn: "date",
-    excludedCategories: [],
-    start: null,
-    end: null
-  }];
-
   private createLoadPromise() {
     const defaultSettings = {
       dataFiles: [],
-      selectedDataFile: undefined,
-      importInfo: {},
-      filters: this.defaultFilters
+      selectedDataFile: undefined
     };
 
     this.loadPromise = lazy(async () => {

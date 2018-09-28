@@ -4,11 +4,10 @@ import LazyPromise from 'lazy-promise'
 import { lazy } from './util'
 import { PapaParseResult } from 'ngx-papaparse/lib/interfaces/papa-parse-result';
 import { utc } from 'moment'
-import { DataRecord, unknownCategory, BasicDataRecord } from './models/data';
+import { DataRecord, unknownCategory, ImportInfo } from './models/data';
 import { DataService } from './data.service';
-import { ImportInfo } from './models/settings';
-import { SettingsService } from './settings.service';
 import { codec, hash } from 'sjcl'
+import { RecordsService } from './records.service';
 
 export class ParseData {
   private strPromise: Promise<string>
@@ -17,7 +16,7 @@ export class ParseData {
   private parseResultPromise: LazyPromise<PapaParseResult>;
   private defaultImportInfoPromise: LazyPromise<ImportInfo>;
 
-  constructor(private file: File, private encoding: string, private skipLines: number, private papa: Papa, private settings: SettingsService) {
+  constructor(private file: File, private encoding: string, private skipLines: number, private papa: Papa, private service: ImportService) {
     this.strPromise = new LazyPromise<string>((resolve, reject) => {
       const reader = new FileReader()
       reader.onerror = e => reject(e)
@@ -50,7 +49,7 @@ export class ParseData {
 
     this.defaultImportInfoPromise = lazy(async () => {
       const parseResult = await this.parseResultPromise
-      return this.settings.getImportInfo(parseResult.meta.fields)
+      return this.service.getImportInfo(parseResult.meta.fields)
     })
   }
 
@@ -100,17 +99,50 @@ export class ParseData {
 })
 export class ImportService {
 
-  constructor(private papa: Papa, private dataService: DataService, private settings: SettingsService) { }
+  constructor(private papa: Papa, private data: DataService, private records: RecordsService) { }
 
   getParseData(input: File, encoding: string, skipLines: number) {
-    return new ParseData(input, encoding, skipLines, this.papa, this.settings)
+    return new ParseData(input, encoding, skipLines, this.papa, this)
   }
 
   async save(parseData: ParseData, importInfo: ImportInfo) {
     const newRecords = await parseData.getResult(importInfo)
-    await this.dataService.addRecords(newRecords)
-    await this.dataService.categorize()
+    await this.records.addRecords(newRecords)
+    await this.records.categorize()
     const availableColumns = await parseData.getAvailableColumns()
-    await this.settings.addImportInfo(availableColumns, importInfo)
+    await this.addImportInfo(availableColumns, importInfo)
+  }
+
+  async getImportInfo(key: object): Promise<ImportInfo> {
+    const data = await this.data.getData()
+
+    const keyHash = this.hashKey(key)
+
+    if (!data.importInfo) {
+      return {}
+    }
+
+    const stored = data.importInfo[keyHash]
+
+    if (!stored) {
+      return {}
+    }
+
+    return stored
+  }
+
+  private hashKey(key: object) {
+    return codec.hex.fromBits(hash.sha256.hash(JSON.stringify(key)));
+  }
+
+  private async addImportInfo(key: object, importInfo: ImportInfo) {
+    const keyHash = this.hashKey(key)
+    await this.data.modifyData(data => {
+      if (!data.importInfo) {
+        data.importInfo = {}
+      }
+
+      data.importInfo[keyHash] = importInfo
+    })
   }
 }

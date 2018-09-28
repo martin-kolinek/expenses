@@ -2,9 +2,8 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ProgressService } from '../progress.service';
 import { MatSelectChange } from '@angular/material/select';
 import { ImportService } from '../import.service';
-import { ImportInfo } from '../models/settings'
-import { Papa } from 'ngx-papaparse';
-import { DataService } from '../data.service';
+import { RecordsService } from '../records.service';
+import { ImportInfo } from '../models/data';
 
 @Component({
   selector: 'app-import',
@@ -43,10 +42,10 @@ export class ImportComponent implements OnInit {
     this.read()
   }
 
-  constructor(private progress: ProgressService, private importService: ImportService, private dataService: DataService) { }
+  constructor(private progress: ProgressService, private importService: ImportService, private recordService: RecordsService) { }
 
   ngOnInit() {
-    this.outputColumns = this.dataService.getRecordProperties()
+    this.outputColumns = this.recordService.getRecordProperties()
   }
 
   async upload() {

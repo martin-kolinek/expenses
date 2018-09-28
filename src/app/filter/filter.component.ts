@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { SettingsService } from '../settings.service';
 import { ProgressService } from '../progress.service';
-import { FilterSettings, SortColumnType, SortDirectionType } from '../models/settings';
+import { FilterSettings, SortColumnType, SortDirectionType } from '../models/data';
 import { Moment, utc } from 'moment';
+import { FilterService } from '../filter.service';
 
 @Component({
   selector: 'app-filter',
@@ -38,11 +38,11 @@ export class FilterComponent implements OnInit {
   set name(n: string) { this._name = n; this.changed = true }
   changed: boolean
 
-  constructor(private dialogRef: MatDialogRef<FilterComponent>, private settings: SettingsService, private progress: ProgressService) { }
+  constructor(private dialogRef: MatDialogRef<FilterComponent>, private filterService: FilterService, private progress: ProgressService) { }
 
   ngOnInit() {
     this.progress.executeWithProgress(async () => {
-      this.filters = await this.settings.getFilters()
+      this.filters = await this.filterService.getFilters()
       this.filters.push("new")
       this.setFilter(this.filters[0])
     })
