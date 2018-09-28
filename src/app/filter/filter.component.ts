@@ -51,7 +51,7 @@ export class FilterComponent implements OnInit {
   setFilter(filter: FilterSettings | "new") {
     this.selectedFilter = filter
     if (filter == "new") {
-      this.changed = false
+      this.changed = true
       this.name = ""
       return
     }
@@ -76,19 +76,26 @@ export class FilterComponent implements OnInit {
     this.changed = false
   }
 
-  apply() {
+  async apply() {
     if (!this.name) {
       return
     }
 
-    this.dialogRef.close({
+    const filter = {
       name: this.name,
       sortDirection: this._sortDirection,
       sortColumn: this.sortColumn,
       excludedCategories: [],
-      start: this.start ? this.start.utc() : null,
-      end: this.end ? this.end.utc() : null
-    })
-  }
+      start: this.start ? this.start.format() : null,
+      end: this.end ? this.end.format() : null
+    }
 
+    if (this.changed) {
+      await this.progress.executeWithProgress(async () => {
+        await this.filterService.saveFilter(filter)
+      })
+    }
+
+    this.dialogRef.close(filter)
+  }
 }

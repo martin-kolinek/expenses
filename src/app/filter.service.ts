@@ -15,28 +15,39 @@ export class FilterService {
     const data = await this.data.getData()
 
     if (!data || !data.filters || !Object.values(data.filters)) {
-      return this.defaultFilters
+      return [this.defaultFilter]
     }
 
     return Object.values(data.filters).slice()
   }
 
-  private readonly defaultFilters: FilterSettings[] = [{
+  async saveFilter(filter: FilterSettings) {
+    await this.data.modifyData(data => {
+      if (!data.filters) {
+        data.filters = {}
+        data.filters[this.defaultFilter.name] = this.defaultFilter
+      }
+
+      data.filters[filter.name] = filter
+    })
+  }
+
+  private readonly defaultFilter: FilterSettings = {
     name: "default",
     sortDirection: "desc",
     sortColumn: "date",
     excludedCategories: [],
     start: null,
     end: null
-  }];
+  };
 
   filterRecords(records: EditableRecord[], filter: FilterSettings): EditableRecord[] {
     const result = records.filter(x => this.filterRecord(x, filter))
 
     result.sort((a, b) => {
-      var mult = 1
+      var mult = -1
       if (filter.sortDirection == "desc") {
-        mult = -1
+        mult = 1
       }
 
       if (filter.sortColumn == "date") {
