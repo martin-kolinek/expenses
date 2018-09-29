@@ -99,7 +99,7 @@ export class EditableRule extends ItemWithCategory {
 export class EditableRecord extends ItemWithCategory {
     readonly date: Moment
 
-    constructor(categories: CategoriesContainer, public record: DataRecord) {
+    constructor(categories: CategoriesContainer, public record: DataRecord, public defaultCurrencyAmount: number | null) {
         super(categories, record.category)
 
         this.date = utc(record.date)

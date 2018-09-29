@@ -54,6 +54,11 @@
       <mat-expansion-panel-header>
         Upload Currency Data
       </mat-expansion-panel-header>
+      Download from <a href="https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html"
+        target="_blank">ECB</a>:
+      <a href="https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml" target="_blank">last 90 days</a>
+      or
+      <a href="https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.xml" target="_blank">all</a>
       <mat-form-field class="input-form-field currency-field">
         <input matInput [matDatepicker]="datepicker" placeholder="Only Dates After" [(ngModel)]="currencyMinDate">
         <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>

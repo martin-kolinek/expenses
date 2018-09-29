@@ -7,7 +7,7 @@
             {{record.date.format("ll")}}
           </div>
           <div class="record-item record-item-amount">
-            {{record.record.amount}} {{record.record.currency}}
+            {{record.defaultCurrencyAmount | number:'1.2-2'}} {{defaultCurrency}}
           </div>
           <div class="record-item record-item-category">
             {{record.category}}
@@ -16,6 +16,7 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
       <p>Contra Account: {{record.record.contraAccount}}</p>
+      <p>Original Amount: {{record.record.amount}} {{record.record.currency}}</p>
       <p>{{record.record.description}}</p>
     </mat-expansion-panel>
   </mat-accordion>

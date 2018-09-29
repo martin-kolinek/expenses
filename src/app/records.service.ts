@@ -4,20 +4,22 @@ import { CategoriesContainer, EditableRecord, EditableRule } from './models/edit
 import { utc } from 'moment';
 import { DataService } from './data.service';
 import { ConversionsService } from './conversions.service';
+import { SettingsService } from './settings.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecordsService {
 
-  constructor(private data: DataService, private conversions: ConversionsService) { }
+  constructor(private data: DataService, private conversions: ConversionsService, private settings: SettingsService) { }
 
   async getRecords(): Promise<EditableRecord[]> {
     const data = await this.data.getData()
+    const settings = await this.settings.getSettings()
     const records = Object.values(data.records)
     const categoryContainer = this.getCategoryContainer(data)
 
-    return records.map(p => new EditableRecord(categoryContainer, p))
+    return records.map(p => new EditableRecord(categoryContainer, p, this.conversions.convert(p, settings.defaultCurrency, data)))
   }
 
   async addRecords(records: DataRecord[]) {

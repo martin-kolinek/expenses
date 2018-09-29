@@ -6,6 +6,7 @@ import { FilterComponent } from '../filter/filter.component';
 import { FilterService } from '../filter.service';
 import { FilterSettings } from '../models/data';
 import { RecordsService } from '../records.service';
+import { SettingsService } from '../settings.service';
 
 @Component({
   selector: 'app-records',
@@ -20,15 +21,18 @@ export class RecordsComponent implements OnInit {
   pageIndex = 0
   pageSize = 20
   currentFilter: FilterSettings
+  defaultCurrency: string
 
   constructor(private progress: ProgressService,
     private recordService: RecordsService,
     private dialog: MatDialog,
-    private filterService: FilterService) {
+    private filterService: FilterService,
+    private settingsService: SettingsService) {
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.progress.executeWithProgress(async () => {
+      this.defaultCurrency = (await this.settingsService.getSettings()).defaultCurrency
       this.currentFilter = (await this.filterService.getFilters())[0]
 
       this.allRecords = await this.recordService.getRecords()
