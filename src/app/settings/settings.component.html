@@ -34,4 +34,32 @@
       </button>
     </div>
   </div>
+  <div class="input-form">
+    <h2>Currency Data</h2>
+    <span *ngIf="currencyData">
+      Current currency data for {{currencyData.start.format("ll")}} to {{currencyData.end.format("ll")}}
+    </span>
+    <span *ngIf="!currencyData">
+      No currency data
+    </span>
+    <mat-form-field class="input-form-field currency-field" *ngIf="settings">
+      <mat-select [value]="settings.defaultCurrency" (selectionChange)="setCurrency($event.value)" placeholder="Default Currency">
+        <mat-option *ngFor="let currency of currencies" [value]="currency">
+          {{currency}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-expansion-panel #currencyUpload>
+      <mat-expansion-panel-header>
+        Upload Currency Data
+      </mat-expansion-panel-header>
+      <mat-form-field class="input-form-field currency-field">
+        <input matInput [matDatepicker]="datepicker" placeholder="Only Dates After" [(ngModel)]="currencyMinDate">
+        <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+        <mat-datepicker #datepicker></mat-datepicker>
+      </mat-form-field>
+      <input type="file" #currencyInput (change)="uploadCurrencies()" class="file-select">
+    </mat-expansion-panel>
+  </div>
 </app-shell>

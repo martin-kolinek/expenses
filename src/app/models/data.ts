@@ -20,6 +20,7 @@ export type ExpensesData = {
     rules: CategoryRule[],
     importInfo: { [key: string]: ImportInfo },
     filters: { [name: string]: FilterSettings }
+    currencies: { [date: string]: CurrencyInfo }
 }
 
 export type Category = {
@@ -31,6 +32,10 @@ export type CategoryRule = {
     category: string,
     property: keyof DataRecord | "any",
     substring: string
+}
+
+export type CurrencyInfo = {
+    [currency: string]: number
 }
 
 export const unknownCategory = "unkwnown"

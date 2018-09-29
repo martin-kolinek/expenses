@@ -52,5 +52,5 @@ export class DataService {
     await this.drive.updateJsonFile(settings.selectedDataFile, data);
   }
 
-  readonly defaultData: ExpensesData = { records: {}, categories: [], rules: [], importInfo: {}, filters: {} }
+  readonly defaultData: ExpensesData = { records: {}, categories: [], rules: [], importInfo: {}, filters: {}, currencies: {} }
 }

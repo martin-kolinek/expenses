@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  googleClientId: "67079736962-2g906ggoas0nijku3ejm45m2n9s689jv.apps.googleusercontent.com"
+  googleClientId: "67079736962-2g906ggoas0nijku3ejm45m2n9s689jv.apps.googleusercontent.com",
+  ecbHistory: "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.xml",
+  ecb90d: "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml"
 };
 
 /*
@@ -14,4 +16,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+import 'zone.js/dist/zone-error';  // Included with Angular CLI.

@@ -63,6 +63,14 @@ export class SettingsService {
     await this.saveSettings()
   }
 
+  async setCurrency(currency: string): Promise<void> {
+    await this.ensureSettings()
+
+    this.settings.defaultCurrency = currency
+
+    await this.saveSettings()
+  }
+
   private async saveSettings() {
     await this.drive.saveSettings(this.settings);
   }
@@ -79,7 +87,8 @@ export class SettingsService {
   private createLoadPromise() {
     const defaultSettings = {
       dataFiles: [],
-      selectedDataFile: undefined
+      selectedDataFile: undefined,
+      defaultCurrency: "EUR"
     };
 
     this.loadPromise = lazy(async () => {

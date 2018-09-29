@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Papa, } from 'ngx-papaparse';
 import LazyPromise from 'lazy-promise'
-import { lazy } from './util'
+import { lazy, readFile } from './util'
 import { PapaParseResult } from 'ngx-papaparse/lib/interfaces/papa-parse-result';
 import { utc } from 'moment'
 import { DataRecord, unknownCategory, ImportInfo } from './models/data';
@@ -17,18 +17,7 @@ export class ParseData {
   private defaultImportInfoPromise: LazyPromise<ImportInfo>;
 
   constructor(private file: File, private encoding: string, private skipLines: number, private papa: Papa, private service: ImportService) {
-    this.strPromise = new LazyPromise<string>((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onerror = e => reject(e)
-      reader.onload = res => {
-        if (typeof reader.result == "string") {
-          resolve(reader.result)
-        }
-
-        reject(new Error("Unexpected read error"))
-      }
-      reader.readAsText(file, encoding)
-    })
+    this.strPromise = lazy(() => readFile(file, encoding))
 
     this.linesPromise = lazy(async () => {
       const str = await this.strPromise

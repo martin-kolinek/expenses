@@ -1,6 +1,7 @@
 export type Settings = {
     dataFiles: DataFile[],
-    selectedDataFile: string | undefined
+    selectedDataFile: string | undefined,
+    defaultCurrency: string
 }
 
 export type DataFile = {

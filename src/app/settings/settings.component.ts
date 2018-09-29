@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { DriveService } from '../drive.service';
 import { SettingsService } from '../settings.service';
 import { Settings } from '../models/settings'
 import { load } from '@angular/core/src/render3/instructions';
 import { ProgressService } from '../progress.service';
+import { ConversionsService, CurrencyData } from '../conversions.service';
+import { Moment } from 'moment';
+import { MatExpansionPanel } from '@angular/material';
 
 @Component({
   selector: 'app-settings',
@@ -12,11 +15,17 @@ import { ProgressService } from '../progress.service';
 })
 export class SettingsComponent implements OnInit {
 
+  @ViewChild('currencyInput') currencyInput: ElementRef<HTMLInputElement>;
+  @ViewChild('currencyUpload') currencyUpload: MatExpansionPanel
+
   private toForget: string[]
   userName: string
   settings: Settings
   fileInfo: FileInfo & { name: string } | undefined
   changed: boolean
+  currencyData: CurrencyData
+  currencyMinDate: Moment | null;
+  currencies: any;
 
   get selectedFile(): string {
     return this.settings.selectedDataFile || ""
@@ -30,7 +39,11 @@ export class SettingsComponent implements OnInit {
     })
   }
 
-  constructor(private driveService: DriveService, private settingsService: SettingsService, private progress: ProgressService) { }
+  constructor(
+    private driveService: DriveService,
+    private settingsService: SettingsService,
+    private progress: ProgressService,
+    private conversions: ConversionsService) { }
 
   async ngOnInit() {
     this.progress.executeWithProgress(async () => {
@@ -58,6 +71,24 @@ export class SettingsComponent implements OnInit {
     this.changed = true
   }
 
+  async uploadCurrencies() {
+    const files = this.currencyInput.nativeElement.files
+    if (files && files.length) {
+      await this.progress.executeWithProgress(async () => {
+        await this.conversions.uploadCurrencies(files[0], this.currencyMinDate)
+        await this.loadCurrencyData()
+      })
+    }
+
+    this.currencyUpload.close()
+  }
+
+  async setCurrency(currency: string) {
+    await this.progress.executeWithProgress(async () => {
+      await this.settingsService.setCurrency(currency)
+    })
+  }
+
   private async loadSelectedFile() {
     if (!this.settings.selectedDataFile) {
       this.fileInfo = undefined
@@ -75,7 +106,12 @@ export class SettingsComponent implements OnInit {
     this.settings = await this.settingsService.getSettings()
     this.toForget = []
     await this.loadSelectedFile()
-
+    await this.loadCurrencyData()
     console.log(JSON.stringify(this.settings))
+  }
+
+  private async loadCurrencyData() {
+    this.currencyData = await this.conversions.getCurrentRange()
+    this.currencies = await this.conversions.getCurrencyOptions()
   }
 }

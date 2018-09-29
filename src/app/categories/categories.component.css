@@ -17,24 +17,3 @@ mat-list-item.rule-line {
     height: 4em;
 }
 
-.color-square {
-    width: 20px;
-    height: 20px;
-    margin-right: 20px;
-}
-
-.category-option {
-    display: flex;
-    align-items: center;
-}
-
-.option-color-square {
-    width: 15px;
-    height: 15px;
-    margin-left: 10px;
-    margin-right: 20px;
-}
-
-.category-option-name {
-    flex-grow: 1;
-}

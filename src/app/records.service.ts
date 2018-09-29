@@ -3,14 +3,14 @@ import { ExpensesData, unknownCategory, CategoryRule, DataRecord, anyProperty, B
 import { CategoriesContainer, EditableRecord, EditableRule } from './models/editable';
 import { utc } from 'moment';
 import { DataService } from './data.service';
-import { codec, hash } from 'sjcl';
+import { ConversionsService } from './conversions.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecordsService {
 
-  constructor(private data: DataService) { }
+  constructor(private data: DataService, private conversions: ConversionsService) { }
 
   async getRecords(): Promise<EditableRecord[]> {
     const data = await this.data.getData()
