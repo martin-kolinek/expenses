@@ -1,6 +1,6 @@
 <div class="category-picker">
   <mat-form-field class="category-picker-input">
-    <input type="text" matInput [matAutocomplete]="auto" [value]="item.category" placeholder="Category" (blur)="setCategory($event.target.value, item)">
+    <input type="text" matInput [matAutocomplete]="auto" [value]="item.category" placeholder="Category" (blur)="setCategory($event.target.value)">
   </mat-form-field>
   <mat-autocomplete #auto="matAutocomplete">
     <mat-option *ngFor="let category of item.availableCategories" [value]="category.name" class="category-option">
