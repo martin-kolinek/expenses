@@ -25,6 +25,8 @@ export class RecordsService {
       for (var record of records) {
         data.records[record.id] = record
       }
+
+      this.categorize(data)
     })
   }
 
@@ -75,22 +77,22 @@ export class RecordsService {
     await this.data.modifyData(data => {
       data.categories = categories
       data.rules = dataRules
+
+      this.categorize(data)
     })
   }
 
-  async categorize() {
-    await this.data.modifyData(data => {
-      for (var id in data.records) {
-        const record = data.records[id]
+  private categorize(data: ExpensesData) {
+    for (var id in data.records) {
+      const record = data.records[id]
 
-        for (var rule of data.rules) {
-          if (!record.userSetCategory && this.matches(rule, record)) {
-            record.category = rule.category
-            break;
-          }
+      for (var rule of data.rules) {
+        if (!record.userSetCategory && this.matches(rule, record)) {
+          record.category = rule.category
+          break;
         }
       }
-    })
+    }
   }
 
   async getCategories(): Promise<Category[]> {

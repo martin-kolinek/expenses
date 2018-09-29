@@ -108,7 +108,6 @@ export class ImportService {
   async save(parseData: ParseData, importInfo: ImportInfo) {
     const newRecords = await parseData.getResult(importInfo)
     await this.records.addRecords(newRecords)
-    await this.records.categorize()
     const availableColumns = await parseData.getAvailableColumns()
     await this.addImportInfo(availableColumns, importInfo)
   }

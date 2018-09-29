@@ -35,7 +35,6 @@ export class CategoriesComponent implements OnInit {
   async save() {
     this.progress.executeWithProgress(async () => {
       await this.records.setRules(this.rules)
-      await this.records.categorize()
     })
   }
 }
