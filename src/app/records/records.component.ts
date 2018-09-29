@@ -23,15 +23,16 @@ export class RecordsComponent implements OnInit {
   currentFilter: FilterSettings
   defaultCurrency: string
 
-  constructor(private progress: ProgressService,
+  constructor(
+    private progress: ProgressService,
     private recordService: RecordsService,
     private dialog: MatDialog,
     private filterService: FilterService,
     private settingsService: SettingsService) {
   }
 
-  ngOnInit() {
-    this.progress.executeWithProgress(async () => {
+  async ngOnInit() {
+    await this.progress.executeWithProgress(async () => {
       this.defaultCurrency = (await this.settingsService.getSettings()).defaultCurrency
       this.currentFilter = (await this.filterService.getFilters())[0]
 

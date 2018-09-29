@@ -93,6 +93,7 @@ export class SettingsService {
 
     this.loadPromise = lazy(async () => {
       this.user = (await this.drive.getUserInfo()).id;
+      console.log("Loading settings from drive")
       const loadedSettings = await this.drive.loadSettings();
       if (loadedSettings) {
         this.settings = loadedSettings as Settings;
