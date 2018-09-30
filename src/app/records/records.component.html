@@ -7,7 +7,8 @@
             {{record.date.format("ll")}}
           </div>
           <div class="record-item record-item-amount">
-            {{record.defaultCurrencyAmount | number:'1.2-2'}} {{defaultCurrency}}
+            {{(record.record.cache ? record.record.cache.defaultCurrencyAmount : null) | number:'1.2-2'}}
+            {{defaultCurrency}}
           </div>
           <div class="record-item record-item-category">
             {{record.category}}

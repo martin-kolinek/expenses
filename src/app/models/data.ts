@@ -11,7 +11,12 @@ export type BasicDataRecord = {
 export type DataRecord = BasicDataRecord & {
     category: string,
     userSetCategory: boolean,
-    id: string
+    id: string,
+    cache: RecordCache
+}
+
+export type RecordCache = {
+    defaultCurrencyAmount: number | null
 }
 
 export type ExpensesData = {

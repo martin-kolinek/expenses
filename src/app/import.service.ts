@@ -70,7 +70,8 @@ export class ParseData {
         ...inputData,
         category: unknownCategory,
         userSetCategory: false,
-        id: codec.base64.fromBits(hash.sha256.hash(JSON.stringify(inputData)))
+        id: codec.base64.fromBits(hash.sha256.hash(JSON.stringify(inputData))),
+        cache: { defaultCurrencyAmount: null }
       }
     })
   }

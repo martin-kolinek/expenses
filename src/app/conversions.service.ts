@@ -67,6 +67,8 @@ export class ConversionsService {
 
     const keepKeys = Array.from(new Set(keepDates.map(p => this.dateKey(p))))
 
+    const currency = (await this.settings.getSettings()).defaultCurrency
+
     this.data.modifyData(data => {
       if (!data.currencies) {
         data.currencies = {}
@@ -75,6 +77,8 @@ export class ConversionsService {
       for (const k of keepKeys) {
         data.currencies[k] = currencyData[k]
       }
+
+      this.convert(data, currency)
     })
   }
 
@@ -95,29 +99,43 @@ export class ConversionsService {
     return Object.keys(data.currencies[range.end.format()])
   }
 
-  convert(record: DataRecord, currency: string, data: ExpensesData): number | null {
-    const date = utc(record.date)
-    const key = this.dateKey(date)
+  async setCurrency(currency: string) {
+    await this.settings.setCurrency(currency)
+    await this.data.modifyData(data => {
+      this.convert(data, currency)
+    })
+  }
 
-    const keyDate = utc(key)
+  convert(data: ExpensesData, currency: string): void {
+    for (const recKey in data.records) {
+      const record = data.records[recKey]
+      const date = utc(record.date)
+      const key = this.dateKey(date)
 
-    const range = this.getRangeFromData(data)
-    if (!range) {
-      return null
+      const keyDate = utc(key)
+
+      const range = this.getRangeFromData(data)
+      if (!range) {
+        continue
+      }
+
+      const curInfo = data.currencies[key]
+
+      if (!record.cache) {
+        record.cache = { defaultCurrencyAmount: null }
+      }
+
+      // A lazy solution without searching for the best key - will work as long as there are no holes in currency data
+      if (curInfo) {
+        record.cache.defaultCurrencyAmount = this.convertUsing(record, currency, curInfo)
+      }
+      else if (keyDate.isBefore(range.start)) {
+        record.cache.defaultCurrencyAmount = this.convertUsing(record, currency, data.currencies[range.start.format()])
+      }
+      else {
+        record.cache.defaultCurrencyAmount = this.convertUsing(record, currency, data.currencies[range.end.format()])
+      }
     }
-
-    const curInfo = data.currencies[key]
-
-    if (curInfo) {
-      return this.convertUsing(record, currency, curInfo)
-    }
-
-    // A lazy solution without searching for the best key - will work as long as there are no holes in currency data
-    if (keyDate.isBefore(range.start)) {
-      return this.convertUsing(record, currency, data.currencies[range.start.format()])
-    }
-
-    return this.convertUsing(record, currency, data.currencies[range.end.format()])
   }
 
   private convertUsing(record: DataRecord, currency: string, curInfo: CurrencyInfo): number | null {

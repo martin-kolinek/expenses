@@ -85,7 +85,7 @@ export class SettingsComponent implements OnInit {
 
   async setCurrency(currency: string) {
     await this.progress.executeWithProgress(async () => {
-      await this.settingsService.setCurrency(currency)
+      await this.conversions.setCurrency(currency)
     })
   }
 

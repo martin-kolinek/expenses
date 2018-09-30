@@ -19,16 +19,18 @@ export class RecordsService {
     const records = Object.values(data.records)
     const categoryContainer = this.getCategoryContainer(data)
 
-    return records.map(p => new EditableRecord(categoryContainer, p, this.conversions.convert(p, settings.defaultCurrency, data)))
+    return records.map(p => new EditableRecord(categoryContainer, p))
   }
 
   async addRecords(records: DataRecord[]) {
+    const currency = (await this.settings.getSettings()).defaultCurrency
     await this.data.modifyData(data => {
       for (var record of records) {
         data.records[record.id] = record
       }
 
       this.categorize(data)
+      this.conversions.convert(data, currency)
     })
   }
 
