@@ -1,0 +1,10 @@
+<app-shell #shell [toolbarTemplate]="toolbar">
+  <ng-content></ng-content>
+</app-shell>
+<ng-template #toolbar>
+  <button mat-icon-button (click)="filter()">
+    <mat-icon>
+      build
+    </mat-icon>
+  </button>
+</ng-template>

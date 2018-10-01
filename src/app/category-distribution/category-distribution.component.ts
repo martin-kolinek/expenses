@@ -2,11 +2,11 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Chart } from 'chart.js'
 
 @Component({
-  selector: 'app-categorydistribution',
-  templateUrl: './categorydistribution.component.html',
-  styleUrls: ['./categorydistribution.component.css']
+  selector: 'app-category-distribution',
+  templateUrl: './category-distribution.component.html',
+  styleUrls: ['./category-distribution.component.css']
 })
-export class CategorydistributionComponent implements OnInit {
+export class CategoryDistributionComponent implements OnInit {
 
   @ViewChild("canvas") canvas: ElementRef<HTMLCanvasElement>
 

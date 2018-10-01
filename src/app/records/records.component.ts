@@ -15,47 +15,26 @@ import { SettingsService } from '../settings.service';
 })
 export class RecordsComponent implements OnInit {
 
-  allRecords: EditableRecord[] = []
   records: EditableRecord[] = []
   displayedRecords: EditableRecord[] = []
   pageIndex = 0
   pageSize = 20
-  currentFilter: FilterSettings
   defaultCurrency: string
 
-  constructor(
-    private progress: ProgressService,
-    private recordService: RecordsService,
-    private dialog: MatDialog,
-    private filterService: FilterService,
-    private settingsService: SettingsService) {
+  constructor() {
   }
 
-  async ngOnInit() {
-    await this.progress.executeWithProgress(async () => {
-      this.defaultCurrency = (await this.settingsService.getSettings()).defaultCurrency
-      this.currentFilter = (await this.filterService.getFilters())[0]
+  ngOnInit() {
+  }
 
-      this.allRecords = await this.recordService.getRecords()
-      this.records = this.filterService.filterRecords(this.allRecords, this.currentFilter)
-      this.changePage(this.pageIndex, this.pageSize)
-    })
+  updateRecords(rec: EditableRecord[]) {
+    this.records = rec
+    this.changePage(this.pageIndex, this.pageSize)
   }
 
   changePage(pageIndex, pageSize) {
     this.displayedRecords = this.records.slice(pageIndex * pageSize, pageIndex * pageSize + pageSize)
     this.pageIndex = pageIndex
     this.pageSize = pageSize
-  }
-
-  filter() {
-    const dialogRef = this.dialog.open(FilterComponent, { data: this.currentFilter })
-    dialogRef.afterClosed().subscribe(result => {
-      if (!result) return
-
-      this.currentFilter = result as FilterSettings
-      this.records = this.filterService.filterRecords(this.allRecords, this.currentFilter)
-      this.changePage(this.pageIndex, this.pageSize)
-    })
   }
 }

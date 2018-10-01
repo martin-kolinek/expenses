@@ -5,7 +5,7 @@ import { CreateComponent } from './create/create.component';
 import { ImportComponent } from './import/import.component';
 import { RecordsComponent } from './records/records.component';
 import { CategoriesComponent } from './categories/categories.component';
-import { CategorydistributionComponent } from './categorydistribution/categorydistribution.component';
+import { CategoryDistributionComponent } from './category-distribution/category-distribution.component';
 
 const routes: Routes = [
   { path: "settings", component: SettingsComponent },
@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: "import", component: ImportComponent },
   { path: "records", component: RecordsComponent },
   { path: "categories", component: CategoriesComponent },
-  { path: "category-distribution", component: CategorydistributionComponent },
+  { path: "category-distribution", component: CategoryDistributionComponent },
   { path: '', redirectTo: '/records', pathMatch: 'full' },
 ]
 

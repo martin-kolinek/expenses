@@ -43,7 +43,8 @@ import { GlobalErrorHandler } from './error.service';
 import { ErrorComponent } from './error/error.component';
 import { CategorypickerComponent } from './categorypicker/categorypicker.component';
 import { FilterComponent } from './filter/filter.component';
-import { CategorydistributionComponent } from './categorydistribution/categorydistribution.component'
+import { CategoryDistributionComponent } from './category-distribution/category-distribution.component';
+import { FilterShellComponent } from './filter-shell/filter-shell.component'
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { CategorydistributionComponent } from './categorydistribution/categorydi
     ErrorComponent,
     CategorypickerComponent,
     FilterComponent,
-    CategorydistributionComponent
+    CategoryDistributionComponent,
+    FilterShellComponent
   ],
   entryComponents: [FilterComponent],
   imports: [

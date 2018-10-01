@@ -1,4 +1,4 @@
-<app-shell title="Records" [toolbarTemplate]="toolbar">
+<app-filter-shell title="Records" (recordsChanged)="updateRecords($event)">
   <mat-accordion>
     <mat-expansion-panel *ngFor="let record of displayedRecords">
       <mat-expansion-panel-header expandedHeight="4em" collapsedHeight="4em">
@@ -23,11 +23,4 @@
   </mat-accordion>
   <mat-paginator [length]="records.length" pageSize="20" [pageSizeOptions]="[10, 20, 50, 100, 200]" (page)="changePage($event.pageIndex, $event.pageSize)">
   </mat-paginator>
-</app-shell>
-<ng-template #toolbar>
-  <button mat-icon-button (click)="filter()">
-    <mat-icon>
-      build
-    </mat-icon>
-  </button>
-</ng-template>
+</app-filter-shell>
