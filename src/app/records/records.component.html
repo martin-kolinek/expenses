@@ -1,4 +1,4 @@
-<app-extended-filter-shell title="Records" (recordsChanged)="updateRecords($event)">
+<app-extended-filter-shell title="Records" (recordsChanged)="updateRecords($event)" (defaultCurrencyChanged)="defaultCurrency = $event">
   <mat-accordion>
     <mat-expansion-panel *ngFor="let record of displayedRecords">
       <mat-expansion-panel-header expandedHeight="4em" collapsedHeight="4em">

@@ -1,12 +1,5 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { ProgressService } from '../progress.service';
 import { EditableRecord } from '../models/editable';
-import { MatDialog } from '@angular/material/dialog';
-import { FilterComponent } from '../filter/filter.component';
-import { FilterService } from '../filter.service';
-import { FilterSettings } from '../models/data';
-import { RecordsService } from '../records.service';
-import { SettingsService } from '../settings.service';
 
 @Component({
   selector: 'app-records',

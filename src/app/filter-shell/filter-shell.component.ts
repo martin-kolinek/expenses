@@ -7,6 +7,7 @@ import { ProgressService } from '../progress.service';
 import { EditableRecord, FilterResult } from '../models/editable';
 import { FilterSettings } from '../models/data';
 import { RecordsService } from '../records.service';
+import { SettingsService } from '../settings.service';
 
 @Component({
   selector: 'app-filter-shell',
@@ -30,17 +31,20 @@ export class FilterShellComponent implements OnInit {
   @Input() toolbarTemplate: TemplateRef<any>
 
   @Output() recordsChanged: EventEmitter<FilterResult> = new EventEmitter<FilterResult>()
+  @Output() defaultCurrencyChanged: EventEmitter<string> = new EventEmitter<string>()
 
   constructor(
     private dialog: MatDialog,
     private filterService: FilterService,
     private recordService: RecordsService,
+    private settingsService: SettingsService,
     private progress: ProgressService
   ) { }
 
   async ngOnInit() {
     await this.progress.executeWithProgress(async () => {
       this.currentFilter = (await this.filterService.getFilters())[0]
+      this.defaultCurrencyChanged.emit((await this.settingsService.getSettings()).defaultCurrency)
 
       this.allRecords = await this.recordService.getRecords()
       this.emitEvent()

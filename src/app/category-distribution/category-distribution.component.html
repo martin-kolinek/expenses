@@ -1,3 +1,4 @@
-<app-shell title="Records">
-  <canvas #canvas></canvas>
-</app-shell>
+<app-extended-filter-shell title="Category Distribution" (recordsChanged)="recordsChanged($event)"
+  (defaultCurrencyChanged)="defaultCurrency = $event">
+  <canvas #canvas class="report-canvas"></canvas>
+</app-extended-filter-shell>

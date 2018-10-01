@@ -25,13 +25,14 @@ export class ExtendedFilterShellComponent implements OnInit {
   }
 
   @Output() recordsChanged = new EventEmitter<EditableRecord[]>()
+  @Output() defaultCurrencyChanged = new EventEmitter<string>()
 
   ngOnInit() {
   }
 
   recordsChangedHandler(res: FilterResult) {
     this.filterResult = res
-
+    console.log(res.length)
     const newSelected = this.selectedPeriod ? this.filterResult.filter(x => x.period == this.selectedPeriod.period) : []
     if (newSelected.length) {
       this.periodSelected(newSelected[0])

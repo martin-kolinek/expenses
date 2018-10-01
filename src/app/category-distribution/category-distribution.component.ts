@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Chart } from 'chart.js'
+import { EditableRecord } from '../models/editable';
+import * as _ from 'lodash'
 
 @Component({
   selector: 'app-category-distribution',
@@ -10,44 +12,54 @@ export class CategoryDistributionComponent implements OnInit {
 
   @ViewChild("canvas") canvas: ElementRef<HTMLCanvasElement>
 
+  chart: Chart
+  defaultCurrency: string
+
   constructor() { }
 
   ngOnInit() {
-    new Chart(this.canvas.nativeElement, {
-      type: 'bar',
-      data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-        datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 1
-        }]
-      },
+    this.chart = new Chart(this.canvas.nativeElement, {
+      type: 'doughnut',
+      data: {},
       options: {
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
+        maintainAspectRatio: false,
+        tooltips: {
+          callbacks: {
+            label: (x, y) => {
+              if (typeof x.index == 'undefined' || typeof x.datasetIndex == 'undefined' || !y.labels || !y.datasets || !y.datasets[x.datasetIndex]) {
+                return ""
+              }
+
+              const data = y.datasets[x.datasetIndex].data
+              if (!data) {
+                return ""
+              }
+
+              return `${y.labels[x.index]}\n${(data[x.index] as number).toLocaleString("sk-SK", { maximumFractionDigits: 2, minimumFractionDigits: 2 })} ${this.defaultCurrency}`
             }
-          }]
+          }
         }
       }
     })
+  }
+
+  recordsChanged(records: EditableRecord[]) {
+    const categories = _.chain(records).groupBy(p => p.category).map((v, k) => {
+      return {
+        category: k,
+        color: v[0].categoryColor,
+        sum: _.sum(v.map(p => Math.abs(p.record.cache.defaultCurrencyAmount || 0)))
+      }
+    }).value()
+
+    this.chart.data = {
+      labels: categories.map(p => p.category),
+      datasets: [{
+        label: 'Category Distribution',
+        data: categories.map(p => p.sum),
+        backgroundColor: categories.map(p => p.color)
+      }]
+    }
+    this.chart.update()
   }
 }
