@@ -2,9 +2,12 @@
   <ng-content></ng-content>
 </app-shell>
 <ng-template #toolbar>
-  <button mat-icon-button (click)="filter()">
+  <ng-container *ngTemplateOutlet="toolbarTemplate ? toolbarTemplate : nothing">
+  </ng-container>
+  <button class="filter-button" mat-icon-button (click)="filter()">
     <mat-icon>
       build
     </mat-icon>
   </button>
 </ng-template>
+<ng-template #nothing></ng-template>

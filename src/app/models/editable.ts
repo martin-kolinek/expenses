@@ -105,3 +105,10 @@ export class EditableRecord extends ItemWithCategory {
         this.date = utc(record.date)
     }
 }
+
+export type FilterResultItem = {
+    period: string,
+    records: EditableRecord[]
+}
+
+export type FilterResult = FilterResultItem[]

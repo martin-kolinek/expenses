@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { EditableRecord } from './models/editable';
+import { EditableRecord, FilterResult } from './models/editable';
 import { FilterSettings } from './models/data';
 import { utc } from 'moment'
 import { DataService } from './data.service';
+import * as _ from 'lodash'
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,7 @@ export class FilterService {
     end: null
   };
 
-  filterRecords(records: EditableRecord[], filter: FilterSettings): EditableRecord[] {
+  filterRecords(records: EditableRecord[], filter: FilterSettings): FilterResult {
     const result = records.filter(x => this.filterRecord(x, filter))
 
     result.sort((a, b) => {
@@ -69,7 +70,22 @@ export class FilterService {
       return 0
     })
 
-    return result
+    return _.chain(result)
+      .groupBy(x => x.record.date.substr(0, 7))
+      .map((v, k) => {
+        return {
+          period: utc(k, "YYYY-MM"),
+          records: v
+        }
+      })
+      .orderBy(p => p.period)
+      .map(x => {
+        return {
+          period: x.period.format("MMM YYYY"),
+          records: x.records
+        }
+      })
+      .value()
   }
 
   private filterRecord(record: EditableRecord, filter: FilterSettings) {

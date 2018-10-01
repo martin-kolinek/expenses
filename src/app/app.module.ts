@@ -44,7 +44,8 @@ import { ErrorComponent } from './error/error.component';
 import { CategorypickerComponent } from './categorypicker/categorypicker.component';
 import { FilterComponent } from './filter/filter.component';
 import { CategoryDistributionComponent } from './category-distribution/category-distribution.component';
-import { FilterShellComponent } from './filter-shell/filter-shell.component'
+import { FilterShellComponent } from './filter-shell/filter-shell.component';
+import { ExtendedFilterShellComponent } from './extended-filter-shell/extended-filter-shell.component'
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { FilterShellComponent } from './filter-shell/filter-shell.component'
     CategorypickerComponent,
     FilterComponent,
     CategoryDistributionComponent,
-    FilterShellComponent
+    FilterShellComponent,
+    ExtendedFilterShellComponent
   ],
   entryComponents: [FilterComponent],
   imports: [

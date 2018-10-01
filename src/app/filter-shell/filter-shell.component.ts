@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter, TemplateRef } from '@angular/core';
 import { ShellComponent } from '../shell/shell.component';
 import { FilterComponent } from '../filter/filter.component';
 import { MatDialog } from '@angular/material';
 import { FilterService } from '../filter.service';
 import { ProgressService } from '../progress.service';
-import { EditableRecord } from '../models/editable';
+import { EditableRecord, FilterResult } from '../models/editable';
 import { FilterSettings } from '../models/data';
 import { RecordsService } from '../records.service';
 
@@ -27,7 +27,9 @@ export class FilterShellComponent implements OnInit {
     this.shell.title = t
   }
 
-  @Output() recordsChanged: EventEmitter<EditableRecord[]> = new EventEmitter<EditableRecord[]>()
+  @Input() toolbarTemplate: TemplateRef<any>
+
+  @Output() recordsChanged: EventEmitter<FilterResult> = new EventEmitter<FilterResult>()
 
   constructor(
     private dialog: MatDialog,
